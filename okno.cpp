@@ -71,12 +71,11 @@ void Okno::StateChange(StatesUI state){
     }
 }
 
-
-
 void Okno::on_pushButton_Call_clicked()
 {
     if(currentState==Idle){
-        activeCall = manager->Call("sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
+        //activeCall = manager->Call("sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
+        activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),"sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
         StateChange(Calling);
     }
     if(currentState==Incomming)
@@ -214,5 +213,11 @@ void Okno::onCallsUpdate(){
 }
 
 void Okno::onRegistrationsUpdate(){
+    map<PString, Registration> regs = manager->getRegistrations();
 
+    ui->comboBoxCallingNumber->clear();
+    for(map<PString, Registration>::iterator it = regs.begin(); it!=regs.end(); it++){
+        ui->comboBoxCallingNumber->addItem((*it).second.aor.c_str());
+    }
+    ui->comboBoxCallingNumber->setCurrentIndex(0);
 }

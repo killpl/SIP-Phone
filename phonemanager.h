@@ -31,6 +31,8 @@ public:
 
 class phoneManager: public OpalManager
 {
+    friend class phoneSIPEndpoint;
+
 private:
     vector<Observer*> callObservers;
     vector<Observer*> regObservers;
@@ -50,7 +52,7 @@ public:
     phoneManager();
 
     string  Call(string number);
-    bool Call(string register, string number);
+    string Call(string register, string number);
     bool Answer(string token);
     bool Hangup(string token);
     bool Reject(string token);
@@ -65,6 +67,7 @@ public:
     // Rejestracja do serwera
     bool Register(string host, string user, string auth, string password, string realm);
     bool Unregister(Registration r);
+    map<PString, Registration> getRegistrations();
 
     void registerCallsObserver(Observer*);
     void registerRegsObserver(Observer*);

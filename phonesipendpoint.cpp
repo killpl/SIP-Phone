@@ -1,4 +1,5 @@
 #include "phonesipendpoint.h"
+#include "phonemanager.h"
 
 phoneSIPEndpoint::phoneSIPEndpoint(OpalManager& manager):SIPEndPoint(manager)
 {
@@ -13,6 +14,11 @@ void phoneSIPEndpoint::OnRegistered(const PString &aor, PBoolean wasRegistering)
         registrations.at(aor).active = true;
     else
         cout << "Warning [onRegister], registration not found " << aor << endl;
+
+    phoneManager* m = dynamic_cast<phoneManager*>(&(this->GetManager()));
+    if(m!=NULL){
+        m->notifyRegChange();
+    }
 
     SIPEndPoint::OnRegistered(aor, wasRegistering);
 }

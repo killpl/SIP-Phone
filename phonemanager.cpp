@@ -1,4 +1,6 @@
 #include "phonemanager.h"
+#include "phonemanager.h"
+
 
 phoneManager::phoneManager():OpalManager()
 {
@@ -38,7 +40,7 @@ string phoneManager::Call(string number){
     if(sipEP->getRegistrations().size()>0){
         map<PString,Registration>::iterator it;
         for(it = sipEP->getRegistrations().begin(); it!=sipEP->getRegistrations().end(); it++){
-            cout << " t" << endl;
+
             if((*it).second.active==true){
                 string t = (*it).first;
                 OpalCall* call = this->SetUpCall(PString(number.c_str()), PString(t));
@@ -59,31 +61,31 @@ string phoneManager::Call(string number){
             }
         }
     }
-    else
-
-        return "";
+    return "";
 }
 
-bool phoneManager::Call(string registration, string number){
+string phoneManager::Call(string registration, string number){
 
     if(sipEP->getRegistrations().find(registration)!=sipEP->getRegistrations().end()){
         Registration r = sipEP->getRegistrations().at(registration);
 
-        OpalCall* call = this->SetUpCall("sip:"+number+r.registrar_address,registration);
-        string token = call->GetToken();
+        OpalCall* call = this->SetUpCall(PString(number.c_str()),registration);
+        if(call!=NULL){
+            string token = call->GetToken();
 
-        CallStruct* s = new CallStruct();
-        s->token = token;
-        s->active = false;
-        s->hold = false;
-        s->incoming = false;
-        s->partyA = registration;
-        s->partyB = "sip:"+number+r.registrar_address;
+            CallStruct* s = new CallStruct();
+            s->token = token;
+            s->active = false;
+            s->hold = false;
+            s->incoming = false;
+            s->partyA = registration;
+            s->partyB = "sip:"+number+r.registrar_address;
 
-        calls.insert(pair<string, CallStruct*>(token, s));
-        return true;
+            calls.insert(pair<string, CallStruct*>(token, s));
+            return token;
+        }
     }
-    return false;
+    return "";
 }
 
 bool phoneManager::Answer(string token){
@@ -99,12 +101,12 @@ bool phoneManager::Reject(string token){
     return pcssEP->RejectIncomingCall(token.c_str());
 }
 
-bool phoneManager::Transfer(string token, string destination){
+bool phoneManager::Transfer(string /*token*/, string /*destination*/){
     // TODO:
     return false;
 }
 
-bool phoneManager::Hold(string token){
+bool phoneManager::Hold(string /*token*/){
     // TODO:
     return false;
 }
@@ -118,7 +120,11 @@ bool phoneManager::Register(string host, string user, string auth, string passwo
 }
 
 bool phoneManager::Unregister(Registration r){
+    return false;
+}
 
+map<PString, Registration> phoneManager::getRegistrations(){
+    return sipEP->getRegistrations();
 }
 
 

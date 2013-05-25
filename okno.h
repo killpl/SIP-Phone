@@ -2,7 +2,9 @@
 #define OKNO_H
 
 #include <QMainWindow>
-#include "phonemanager.h"
+#include <phonemanager.h>
+
+using namespace std;
 
 class phoneManager;
 
