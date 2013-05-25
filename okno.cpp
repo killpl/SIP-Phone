@@ -8,7 +8,26 @@ Okno::Okno(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Startowe ustawienia okna
+    ui->widgetRight->hide();
+    setFixedWidth(260);
+    setWindowTitle("Softphone");
+
+    activeCall = "";
+
     manager = new phoneManager();
+
+    Observer* ob = new CallsObserver();
+    ob->setListener(this);
+    manager->registerCallsObserver(ob);
+
+    ob = new RegistrationObserver();
+    ob->setListener(this);
+    manager->registerRegsObserver(ob);
+
+
+    StateChange(Idle);
+
 }
 
 Okno::~Okno()
@@ -17,14 +36,64 @@ Okno::~Okno()
     delete manager;
 }
 
+void Okno::StateChange(StatesUI state){
+    currentState = state;
+
+    switch(state){
+
+    case Idle:
+        ui->lineEditNumber->setDisabled(false);
+        ui->pushButton_Call->setEnabled(true);
+        ui->pushButton_Hangup->setEnabled(false);
+        ui->lineEditNumber->setText("");
+        break;
+
+    case Incomming:
+    case Calling:
+        ui->lineEditNumber->setDisabled(true);
+        ui->pushButton_Call->setEnabled(true);
+        ui->pushButton_Hangup->setEnabled(true);
+        break;
+
+    case OnHold:
+        ui->lineEditNumber->setDisabled(false);
+        ui->pushButton_Call->setEnabled(true);
+        ui->pushButton_Hangup->setEnabled(false);
+        break;
+
+    case InCall:
+        ui->lineEditNumber->setDisabled(true);
+        ui->pushButton_Call->setEnabled(false);
+        ui->pushButton_Hangup->setEnabled(false);
+        ui->pushButton_Hangup->setEnabled(true);
+        break;
+
+    }
+}
+
+
+
 void Okno::on_pushButton_Call_clicked()
 {
-
+    if(currentState==Idle){
+        activeCall = manager->Call("sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
+        StateChange(Calling);
+    }
+    if(currentState==Incomming)
+        manager->Answer(activeCall);
 }
 
 void Okno::on_pushButton_Hangup_clicked()
 {
+    cout << "Hangup" << endl;
 
+    if(activeCall!=""){
+        manager->Hangup(activeCall);
+        activeCall = "";
+    } else {
+        cout << "Warning, no call to hangup" << endl;
+    }
+    StateChange(Idle);
 }
 
 void Okno::on_pushButton_1_clicked()
@@ -89,3 +158,61 @@ void Okno::on_pushButton_Clear_clicked()
     ui->lineEditNumber->setText("");
 }
 
+
+void Okno::on_pushButtonToggleRight_clicked()
+{
+    if(ui->widgetRight->isHidden()){
+        ui->widgetRight->show();
+        ui->pushButtonToggleRight->setText("<");
+        setFixedWidth(700);
+    } else {
+        ui->widgetRight->hide();
+        ui->pushButtonToggleRight->setText(">");
+        setFixedWidth(260);
+    }
+}
+
+
+void Okno::setNumberText(QString text){
+    if(text.contains("sip:")){
+        text = text.mid(4,text.indexOf("@")-4);
+    }
+    ui->lineEditNumber->setText(text);
+}
+
+void Okno::onCallsUpdate(){
+    cout << "Calls update" << endl;
+
+    vector<CallStruct*> vIn = manager->getIncommingCalls();
+    vector<CallStruct*> vOut = manager->getOutgoinCalls();
+
+    if(vIn.size()>0){
+        CallStruct* c = *vIn.begin();
+        activeCall = c->token;
+        setNumberText(c->partyB.c_str());
+        //ui->lineEditNumber->setText(c->partyB.c_str());
+
+        if(c->active)
+            StateChange(InCall);
+        else
+            StateChange(Incomming);
+    }
+
+
+    if(vOut.size()==0 && vIn.size()==0){
+        StateChange(Idle);
+        activeCall = "";
+        ui->lineEditNumber->setText("");
+
+    }
+
+    // Backup
+    if(activeCall=="" && manager->getActiveCalls().size()>0){
+        activeCall = (*manager->getActiveCalls().begin())->token;
+        StateChange(InCall);
+    }
+}
+
+void Okno::onRegistrationsUpdate(){
+
+}

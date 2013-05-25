@@ -9,7 +9,7 @@ class OpalPhone:public PProcess{
     PCLASSINFO(OpalPhone,PProcess);
 public:
     void Main(){
-        PTrace::SetLevel(3);
+        PTrace::SetLevel(2);
 
         int argc=1;
         char**argv=new char*[argc];

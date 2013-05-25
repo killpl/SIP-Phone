@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "phonemanager.h"
 
+class phoneManager;
+
 namespace Ui {
 class Okno;
 }
@@ -14,10 +16,29 @@ class Okno : public QMainWindow
 
     phoneManager* manager;
     
+    enum StatesUI{
+        Idle,
+        Incomming,
+        Calling,
+        InCall,
+        OnHold
+    };
+
+    StatesUI currentState;
+    void StateChange(StatesUI state);
+    string activeCall;
+
+    void setNumberText(QString text);
+
 public:
     explicit Okno(QWidget *parent = 0);
     ~Okno();
     
+    void onCallsUpdate();
+    void onRegistrationsUpdate();
+
+
+
 private slots:
     void on_pushButton_Call_clicked();
 
@@ -44,6 +65,10 @@ private slots:
     void on_pushButton_Backspace_clicked();
 
     void on_pushButton_Clear_clicked();
+
+    void on_pushButton_Hangup_clicked();
+
+    void on_pushButtonToggleRight_clicked();
 
 private:
     Ui::Okno *ui;

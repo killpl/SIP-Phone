@@ -9,15 +9,22 @@ map<PString, Registration> phoneSIPEndpoint::getRegistrations(){
 }
 
 void phoneSIPEndpoint::OnRegistered(const PString &aor, PBoolean wasRegistering){
-    registrations.at(aor).active = true;
+    if(registrations.find(aor)!=registrations.end())
+        registrations.at(aor).active = true;
+    else
+        cout << "Warning [onRegister], registration not found " << aor << endl;
 
     SIPEndPoint::OnRegistered(aor, wasRegistering);
 }
 
 bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned expire =200, const PTimeInterval &minRetryTime =0, const PTimeInterval &maxRetryTime=0){
-
     Registration r;
-    r.aor = string((const char*)user);
+
+    string aor2 = user;
+    if(aor2.find("sip:") == aor2.npos)
+        aor2 = "sip:"+aor2+"@"+(const char*)host;
+
+    r.aor = aor2; //string((const char*)user);
     r.authID = (const char*)autName;
     r.password = (const char*)password;
     r.registrar_address = (const char*)host;
@@ -28,5 +35,4 @@ bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const 
     registrations.insert(pair<PString, Registration>(aor, r));
 
     SIPEndPoint::Register(host, user, autName, password, authRealm);
-
 }

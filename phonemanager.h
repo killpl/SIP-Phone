@@ -9,10 +9,16 @@
 #include "phonesipendpoint.h"
 #include "phonepcssendpoint.h"
 
+#include "observer.h"
+
 #include <map>
 
+class Observer;
 
-class Call{
+class CallStruct{
+public:
+    string token;   // token
+
     bool active;    // answered
     bool hold;      // on hold
     bool incoming;  // in or out
@@ -26,26 +32,44 @@ class Call{
 class phoneManager: public OpalManager
 {
 private:
+    vector<Observer*> callObservers;
+    vector<Observer*> regObservers;
+
     string defaultServer;
 
     // Endpoints
     phoneSIPEndpoint* sipEP;
     phonePCSSEndpoint* pcssEP;
 
+    map<string, CallStruct*> calls;
+
+    void notifyCallChange();
+    void notifyRegChange();
 
 public:
     phoneManager();
 
-    bool Call(string number);
+    string  Call(string number);
+    bool Call(string register, string number);
     bool Answer(string token);
     bool Hangup(string token);
     bool Reject(string token);
     bool Transfer(string token, string destination);
     bool Hold(string token);
 
-    // Server registration
+    // Rozmowy
+    vector<CallStruct*> getIncommingCalls();
+    vector<CallStruct*> getOutgoinCalls();
+    vector<CallStruct*> getActiveCalls();
+
+    // Rejestracja do serwera
     bool Register(string host, string user, string auth, string password, string realm);
     bool Unregister(Registration r);
+
+    void registerCallsObserver(Observer*);
+    void registerRegsObserver(Observer*);
+
+    CallStruct* getCall(string token);
 
 private:
     // Callbacks
@@ -54,8 +78,7 @@ private:
     void OnClearedCall(OpalCall &call);
     void OnHold(OpalConnection &connection, bool fromRemote, bool onHold);
     void OnEstablishedCall(OpalCall &call);
-    void OnNewConnection(OpalConnection &connection);
-
+    PBoolean OnIncomingConnection(OpalConnection &connection, unsigned options, OpalConnection::StringOptions *stringOptions);
 };
 
 #endif // PHONEMANAGER_H
