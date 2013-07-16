@@ -17,13 +17,17 @@ SOURCES += main.cpp\
     phonemanager.cpp \
     phonesipendpoint.cpp \
     phonepcssendpoint.cpp \
-    observer.cpp
+    observer.cpp \
+    logger.cpp \
+    contactsmodel.cpp
 
 HEADERS  += okno.h \
     phonemanager.h \
     phonesipendpoint.h \
     phonepcssendpoint.h \
-    observer.h
+    observer.h \
+    logger.h \
+    contactsmodel.h
 
 FORMS    += okno.ui
 

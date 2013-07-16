@@ -23,7 +23,7 @@ phoneManager::phoneManager():OpalManager()
 
     // Utworzenie portu nasluchujacego sip (5060)
     PIPSocket::Address addr = INADDR_ANY;
-    OpalListenerUDP *listener = new OpalListenerUDP(*sipEP, addr, 5060);
+    OpalListenerUDP *listener = new OpalListenerUDP(*sipEP, addr, 5065);
     sipEP->StartListener(listener);
 
     // Wylaczenie video
@@ -35,7 +35,7 @@ phoneManager::phoneManager():OpalManager()
     sipEP->Register(PString("sip.actio.pl"), PString("48858743092"), PString("48858743092") ,PString("haslovoiptrx"),PString(""), 3600, PTimeInterval(), PTimeInterval() );
 }
 
-
+// Zadzwon z pierwszego dostepnego numeru na podany numer
 string phoneManager::Call(string number){
     if(sipEP->getRegistrations().size()>0){
         map<PString,Registration>::iterator it;
@@ -64,6 +64,7 @@ string phoneManager::Call(string number){
     return "";
 }
 
+// Zadzwon z wybranego zarejestrowanego numeru na podany numer
 string phoneManager::Call(string registration, string number){
 
     if(sipEP->getRegistrations().find(registration)!=sipEP->getRegistrations().end()){
@@ -88,15 +89,18 @@ string phoneManager::Call(string registration, string number){
     return "";
 }
 
+// Odbierz polaczenie przychodzace
 bool phoneManager::Answer(string token){
     return pcssEP->AcceptIncomingCall(token.c_str());
 }
 
+// Zakoncz polaczenie
 bool phoneManager::Hangup(string token){
     //OpalCall * call = FindCallWithLock(token.c_str());
     return ClearCall(token.c_str());
 }
 
+// Odrzuc przychodzace polaczenie
 bool phoneManager::Reject(string token){
     return pcssEP->RejectIncomingCall(token.c_str());
 }
@@ -106,8 +110,15 @@ bool phoneManager::Transfer(string /*token*/, string /*destination*/){
     return false;
 }
 
-bool phoneManager::Hold(string /*token*/){
-    // TODO:
+bool phoneManager::Hold(string token){
+    OpalCall * call = FindCallWithLock(token.c_str());
+    if(call!=NULL){
+        if(call->IsOnHold())
+            call->Retrieve();
+        else
+            call->Hold();
+        return true;
+    }
     return false;
 }
 
@@ -120,7 +131,7 @@ bool phoneManager::Register(string host, string user, string auth, string passwo
 }
 
 bool phoneManager::Unregister(Registration r){
-    return false;
+    return sipEP->Unregister(r.aor);
 }
 
 map<PString, Registration> phoneManager::getRegistrations(){
@@ -135,6 +146,8 @@ void phoneManager::OnAlerting(OpalConnection &connection){
 
 OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &connection, const PString &caller){
     string token = connection.GetCall().GetToken();
+
+    logger::instance().log(4, "onAnswerCall " + token);
 /*
     if(calls.find(token)!=calls.end()){
         calls.at(token)->active = true;
@@ -149,10 +162,12 @@ OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &co
 void phoneManager::OnClearedCall(OpalCall &call){
     string token = call.GetToken();
 
+    logger::instance().log(4, "onClearedCall " + token);
+
     if(calls.find(token)!=calls.end()){
         calls.erase(calls.find(token));
     } else {
-        cout << "Warning [clearedCal], call not found" << endl;
+        logger::instance().log(4, "Warning [clearedCal], call not found");
     }
 
     notifyCallChange();
@@ -161,10 +176,13 @@ void phoneManager::OnClearedCall(OpalCall &call){
 
 void phoneManager::OnHold(OpalConnection &connection, bool fromRemote, bool onHold){
      string token = connection.GetCall().GetToken();
+
+     logger::instance().log(4, "onHold " + token);
+
      if(calls.find(token)!=calls.end()){
          calls.at(token)->hold = onHold;
      } else {
-         cout << "Warning [onHold], call not found" << endl;
+          logger::instance().log(4,"Warning [onHold], call not found");
      }
 
      notifyCallChange();
@@ -172,12 +190,14 @@ void phoneManager::OnHold(OpalConnection &connection, bool fromRemote, bool onHo
 }
 
 void phoneManager::OnEstablishedCall(OpalCall &call){
-
     string token = call.GetToken();
+
+    logger::instance().log(4, "onEstablishedCall "+ token);
+
     if(calls.find(token)!=calls.end()){
         calls.at(token)->active = true;
     } else {
-        cout << "Warning [onEstablished], call not found" << endl;
+        logger::instance().log(4,"Warning [onEstablished], call not found");
     }
 
     cout << "Established" << endl;
@@ -189,8 +209,10 @@ void phoneManager::OnEstablishedCall(OpalCall &call){
 PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned options, OpalConnection::StringOptions *stringOptions){
     string token = conn.GetCall().GetToken();
 
+    logger::instance().log(4, "onIncommingConnection " + token);
+
     if(calls.find(token)!=calls.end()){
-        cout << "Warning [onIncommingConnection], token repeat" << endl;
+        logger::instance().log(4,"Warning [onIncommingConnection], token repeat");
     } else {
         CallStruct* s = new CallStruct();
         s->token = token;

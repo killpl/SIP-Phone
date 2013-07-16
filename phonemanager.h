@@ -10,6 +10,7 @@
 #include "phonepcssendpoint.h"
 
 #include "observer.h"
+#include "logger.h"
 
 #include <map>
 
