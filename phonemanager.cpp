@@ -38,7 +38,7 @@ phoneManager::phoneManager():OpalManager()
 // Zadzwon z pierwszego dostepnego numeru na podany numer
 string phoneManager::Call(string number){
     if(sipEP->getRegistrations().size()>0){
-        map<PString,Registration>::iterator it;
+        map<PString,RegistrationStruct>::iterator it;
         for(it = sipEP->getRegistrations().begin(); it!=sipEP->getRegistrations().end(); it++){
 
             if((*it).second.active==true){
@@ -67,8 +67,11 @@ string phoneManager::Call(string number){
 // Zadzwon z wybranego zarejestrowanego numeru na podany numer
 string phoneManager::Call(string registration, string number){
 
-    if(sipEP->getRegistrations().find(registration)!=sipEP->getRegistrations().end()){
-        Registration r = sipEP->getRegistrations().at(registration);
+    map<PString, RegistrationStruct> mapa = sipEP->getRegistrations();
+
+    if(mapa.find(registration)!=mapa.end()){
+
+        RegistrationStruct r = mapa.at(registration);
 
         OpalCall* call = this->SetUpCall(PString(number.c_str()),registration);
         if(call!=NULL){
@@ -130,11 +133,11 @@ bool phoneManager::Register(string host, string user, string auth, string passwo
 
 }
 
-bool phoneManager::Unregister(Registration r){
+bool phoneManager::Unregister(RegistrationStruct r){
     return sipEP->Unregister(r.aor);
 }
 
-map<PString, Registration> phoneManager::getRegistrations(){
+map<PString, RegistrationStruct> phoneManager::getRegistrations(){
     return sipEP->getRegistrations();
 }
 

@@ -529,7 +529,14 @@
               </widget>
              </item>
              <item row="3" column="0" colspan="2">
-              <widget class="QListView" name="listViewAddressbook"/>
+              <widget class="QListView" name="listViewAddressbook">
+               <property name="dragEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="dragDropMode">
+                <enum>QAbstractItemView::DragOnly</enum>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0" colspan="2">
               <widget class="Line" name="line_2">
@@ -588,11 +595,13 @@
     <property name="title">
      <string>Ustawienia</string>
     </property>
+    <addaction name="actionKonfiguracja_programu_2"/>
    </widget>
    <widget class="QMenu" name="menuPomoc">
     <property name="title">
      <string>Pomoc</string>
     </property>
+    <addaction name="actionO_programie"/>
    </widget>
    <addaction name="menuPlik"/>
    <addaction name="menuUstawienia"/>
@@ -615,6 +624,21 @@
   <action name="actionZamknij">
    <property name="text">
     <string>Zamknij</string>
+   </property>
+  </action>
+  <action name="actionKonfiguracja_programu">
+   <property name="text">
+    <string>Konfiguracja programu</string>
+   </property>
+  </action>
+  <action name="actionKonfiguracja_programu_2">
+   <property name="text">
+    <string>Konfiguracja programu</string>
+   </property>
+  </action>
+  <action name="actionO_programie">
+   <property name="text">
+    <string>O programie</string>
    </property>
   </action>
  </widget>

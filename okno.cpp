@@ -26,6 +26,15 @@ Okno::Okno(QWidget *parent) :
     manager->registerRegsObserver(ob);
 
 
+
+
+    ui->listViewAddressbook->setModel(new contactsModel(this));
+    ui->listViewAddressbook->setDragEnabled(true);
+    ui->listViewAddressbook->setItemDelegate(new ContactDelegate(this));
+    ui->listViewAddressbook->setDragEnabled(true);
+    ui->listViewAddressbook->setAcceptDrops(false);
+    ui->listViewAddressbook->setDragDropMode(QAbstractItemView::DragOnly);
+
     StateChange(Idle);
 
 }
@@ -76,7 +85,13 @@ void Okno::on_pushButton_Call_clicked()
     if(currentState==Idle){
         //activeCall = manager->Call("sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
         activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),"sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
-        StateChange(Calling);
+        if(activeCall!="")
+            StateChange(Calling);
+        else
+        {
+            // TODO: Error message
+            StateChange(Idle);
+        }
     }
     if(currentState==Incomming)
         manager->Answer(activeCall);
@@ -213,11 +228,16 @@ void Okno::onCallsUpdate(){
 }
 
 void Okno::onRegistrationsUpdate(){
-    map<PString, Registration> regs = manager->getRegistrations();
+    map<PString, RegistrationStruct> regs = manager->getRegistrations();
 
     ui->comboBoxCallingNumber->clear();
-    for(map<PString, Registration>::iterator it = regs.begin(); it!=regs.end(); it++){
+    for(map<PString, RegistrationStruct>::iterator it = regs.begin(); it!=regs.end(); it++){
         ui->comboBoxCallingNumber->addItem((*it).second.aor.c_str());
     }
     ui->comboBoxCallingNumber->setCurrentIndex(0);
+}
+
+void Okno::on_actionKonfiguracja_programu_2_triggered()
+{
+    (new Settings(NULL))->show();
 }

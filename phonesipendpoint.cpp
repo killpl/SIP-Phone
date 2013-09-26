@@ -5,7 +5,7 @@ phoneSIPEndpoint::phoneSIPEndpoint(OpalManager& manager):SIPEndPoint(manager)
 {
 }
 
-map<PString, Registration> phoneSIPEndpoint::getRegistrations(){
+map<PString, RegistrationStruct> phoneSIPEndpoint::getRegistrations(){
     return registrations;
 }
 
@@ -23,8 +23,18 @@ void phoneSIPEndpoint::OnRegistered(const PString &aor, PBoolean wasRegistering)
     SIPEndPoint::OnRegistered(aor, wasRegistering);
 }
 
+void phoneSIPEndpoint::OnRegistrationFailed(const PString &aor, SIP_PDU::StatusCodes reason, PBoolean wasRegistering){
+    // TODO
+
+}
+
+void phoneSIPEndpoint::OnRegistrationStatus(const RegistrationStatus &status){
+    // TODO
+
+}
+
 bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned expire =200, const PTimeInterval &minRetryTime =0, const PTimeInterval &maxRetryTime=0){
-    Registration r;
+    RegistrationStruct r;
 
     string aor2 = user;
     if(aor2.find("sip:") == aor2.npos)
@@ -38,7 +48,7 @@ bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const 
 
     PString aor = r.aor.c_str();
 
-    registrations.insert(pair<PString, Registration>(aor, r));
+    registrations.insert(pair<PString, RegistrationStruct>(aor, r));
 
-    SIPEndPoint::Register(host, user, autName, password, authRealm);
+    return SIPEndPoint::Register(host, user, autName, password, authRealm);
 }

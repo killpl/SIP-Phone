@@ -11,24 +11,12 @@
 
 #include "observer.h"
 #include "logger.h"
+#include "structs.h"
 
 #include <map>
 
 class Observer;
 
-class CallStruct{
-public:
-    string token;   // token
-
-    bool active;    // answered
-    bool hold;      // on hold
-    bool incoming;  // in or out
-
-    string partyA;  // source
-    string partyB;  // dest
-
-    string begin;   // call begin time
-};
 
 class phoneManager: public OpalManager
 {
@@ -67,8 +55,8 @@ public:
 
     // Rejestracja do serwera
     bool Register(string host, string user, string auth, string password, string realm);
-    bool Unregister(Registration r);
-    map<PString, Registration> getRegistrations();
+    bool Unregister(RegistrationStruct r);
+    map<PString, RegistrationStruct> getRegistrations();
 
     void registerCallsObserver(Observer*);
     void registerRegsObserver(Observer*);

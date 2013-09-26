@@ -3,13 +3,28 @@
 
 #include <ptlib.h>
 #include <ptlib/pprocess.h>
-
+#include "configuration.h"
 
 class OpalPhone:public PProcess{
     PCLASSINFO(OpalPhone,PProcess);
 public:
     void Main(){
-        PTrace::SetLevel(2);
+        //PTrace::SetLevel(2);
+
+        vector<RegistrationStruct> regs;
+        RegistrationStruct r;
+        r.aor = "123";
+        r.registrar_address = "127.0.0.1";
+        regs.push_back(r);
+        r.aor = "567";
+        regs.push_back(r);
+
+        configuration::instance().setRegistrations(regs);
+        configuration::instance().set("test", "test");
+        configuration::instance().set("numerek", 123);
+
+        configuration::instance().saveConfiguration("test");
+
 
         int argc=1;
         char**argv=new char*[argc];

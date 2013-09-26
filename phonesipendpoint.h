@@ -7,30 +7,21 @@
 #include <vector>
 #include <string>
 
+#include "structs.h"
+
 using namespace std;
-
-class Registration{
-public:
-    string aor;
-    string user_agent;
-    string registrar_address;
-    string local_party_name;
-    string password;
-    string authID;
-    string token;
-
-    bool active;
-};
 
 class phoneSIPEndpoint : public SIPEndPoint
 {
-    map<PString, Registration> registrations;
+    map<PString, RegistrationStruct> registrations;
 
 public:
     phoneSIPEndpoint(OpalManager& manager);
-    map<PString, Registration> getRegistrations();
+    map<PString, RegistrationStruct> getRegistrations();
 
     virtual void OnRegistered(const PString &aor, PBoolean wasRegistering);
+    virtual void OnRegistrationFailed(const PString &aor, SIP_PDU::StatusCodes reason, PBoolean wasRegistering);
+    virtual void OnRegistrationStatus(const RegistrationStatus &status);
     virtual bool Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned expire, const PTimeInterval &minRetryTime, const PTimeInterval &maxRetryTime);
 };
 

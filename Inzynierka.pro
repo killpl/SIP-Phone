@@ -4,13 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Inzynierka
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         okno.cpp \
@@ -19,7 +20,10 @@ SOURCES += main.cpp\
     phonepcssendpoint.cpp \
     observer.cpp \
     logger.cpp \
-    contactsmodel.cpp
+    contactsmodel.cpp \
+    configuration.cpp \
+    settings.cpp \
+    ContactDelegate.cpp
 
 HEADERS  += okno.h \
     phonemanager.h \
@@ -27,9 +31,14 @@ HEADERS  += okno.h \
     phonepcssendpoint.h \
     observer.h \
     logger.h \
-    contactsmodel.h
+    contactsmodel.h \
+    configuration.h \
+    structs.h \
+    settings.h \
+    ContactDelegate.h
 
-FORMS    += okno.ui
+FORMS    += okno.ui \
+    settings.ui
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/local/lib/release/ -lopal
