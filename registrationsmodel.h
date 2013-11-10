@@ -40,6 +40,7 @@ signals:
 
     void Register(RegistrationStruct r);
     void Unregister(RegistrationStruct r);
+
 public slots:
     void RegistrationSuccess(QString aor, QString registrar);
     void RegistrationError(QString aor, QString registrar);

@@ -6,8 +6,11 @@
 
 #include "phonemanager.h"
 
-#include "ContactDelegate.h"
+#include "contactdelegate.h"
+
 #include "contactsmodel.h"
+#include "historymodel.h"
+
 #include "settings.h"
 #include "configuration.h"
 
@@ -48,6 +51,10 @@ public:
     
     void onCallsUpdate();
     void onRegistrationsUpdate();
+
+signals:
+    void RegistrationSuccess(QString aor, QString registrar);
+    void RegistrationFailed(QString aor, QString registrar);
 
 private slots:
     void RegistrationAdd(RegistrationStruct r);

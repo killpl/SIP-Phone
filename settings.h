@@ -5,7 +5,7 @@
 #include <QHeaderView>
 
 #include "settings.h"
-#include "RegistrationsModel.h"
+#include "registrationsmodel.h"
 
 
 namespace Ui {
@@ -27,6 +27,9 @@ public:
 signals:
     void Register(RegistrationStruct r);
     void Unregister(RegistrationStruct r);
+
+    void RegistrationSuccess(QString aor, QString registrar);
+    void RegistrationFailed(QString aor, QString registrar);
 
 private slots:
     void on_pushButtonCancel_clicked();

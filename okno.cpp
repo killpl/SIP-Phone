@@ -27,7 +27,7 @@ Okno::Okno(QWidget *parent) :
     ob->setListener(this);
     manager->registerRegsObserver(ob);
 
-    ui->listViewAddressbook->setModel(new contactsModel(this));
+    ui->listViewAddressbook->setModel(new ContactsModel(this));
     ui->listViewAddressbook->setDragEnabled(true);
     ui->listViewAddressbook->setItemDelegate(new ContactDelegate(this));
     ui->listViewAddressbook->setDragEnabled(true);
@@ -35,10 +35,18 @@ Okno::Okno(QWidget *parent) :
     ui->listViewAddressbook->setDragDropMode(QAbstractItemView::DragOnly);
 
 
+    ui->tableViewHistory->setModel(new HistoryModel(this));
+    ui->tableViewHistory->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
+    ui->tableViewHistory->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
+    ui->tableViewHistory->setColumnWidth(1, 50);
+
     settings = new Settings(NULL);
 
     connect(settings, SIGNAL(Register(RegistrationStruct)), this, SLOT(RegistrationAdd(RegistrationStruct)));
     connect(settings, SIGNAL(Unregister(RegistrationStruct)), this, SLOT(RegistrationRemove(RegistrationStruct)));
+
+    connect(this, SIGNAL(RegistrationSuccess(QString,QString)), settings, SIGNAL(RegistrationSuccess(QString,QString)));
+    connect(this, SIGNAL(RegistrationFailed(QString,QString)), settings, SIGNAL(RegistrationFailed(QString,QString)));
 
     StateChange(Idle);
 
@@ -252,8 +260,12 @@ void Okno::onRegistrationsUpdate(){
 
     ui->comboBoxCallingNumber->clear();
     for(map<PString, RegistrationStruct>::iterator it = regs.begin(); it!=regs.end(); it++){
-        if(it->second.active==true)
+        if(it->second.active==true){
             ui->comboBoxCallingNumber->addItem((*it).second.aor.c_str());
+            emit RegistrationSuccess(it->second.aor.c_str(), it->second.registrar_address.c_str());
+        } else {
+            emit RegistrationFailed(it->second.aor.c_str(), it->second.registrar_address.c_str());
+        }
     }
     ui->comboBoxCallingNumber->setCurrentIndex(0);
 }

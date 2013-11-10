@@ -1,4 +1,4 @@
-#include "ContactDelegate.h"
+#include "contactdelegate.h"
 
 ContactDelegate::ContactDelegate(QObject *parent):QStyledItemDelegate(parent)
 {

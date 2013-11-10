@@ -1,4 +1,4 @@
-#include "RegistrationsModel.h"
+#include "registrationsmodel.h"
 
 RegistrationsModel::RegistrationsModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -162,8 +162,9 @@ void RegistrationsModel::addRegistration(RegistrationStruct reg){
 // SLOTS -------------------------------------
 void RegistrationsModel::RegistrationSuccess(QString aor, QString registrar){
     for(auto it=registrations.begin(); it!=registrations.end(); it++){
-        if(it->aor==aor.toStdString() && it->registrar_address==registrar.toStdString()){
+        if("sip:"+it->aor+"@"+registrar.toStdString()==aor.toStdString() && it->registrar_address==registrar.toStdString()){
             it->active = true;
+            this->reset();
             return;
         }
     }
@@ -171,8 +172,9 @@ void RegistrationsModel::RegistrationSuccess(QString aor, QString registrar){
 
 void RegistrationsModel::RegistrationError(QString aor, QString registrar){
     for(auto it=registrations.begin(); it!=registrations.end(); it++){
-        if(it->aor==aor.toStdString() && it->registrar_address==registrar.toStdString()){
+       if("sip:"+it->aor+"@"+registrar.toStdString()==aor.toStdString() && it->registrar_address==registrar.toStdString()){
             it->active = false;
+            this->reset();
             return;
         }
     }

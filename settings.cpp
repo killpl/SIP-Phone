@@ -14,6 +14,9 @@ Settings::Settings(QWidget *parent) :
 
     connect(model, SIGNAL(Register(RegistrationStruct)), this, SIGNAL(Register(RegistrationStruct)));
     connect(model, SIGNAL(Unregister(RegistrationStruct)), this, SIGNAL(Unregister(RegistrationStruct)));
+
+    connect(this, SIGNAL(RegistrationSuccess(QString,QString)), model, SLOT(RegistrationSuccess(QString,QString)));
+    connect(this, SIGNAL(RegistrationFailed(QString,QString)), model, SLOT(RegistrationError(QString,QString)));
 }
 
 Settings::~Settings()

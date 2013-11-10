@@ -46,6 +46,14 @@ struct ContactStruct{
     string number;
 };
 
+struct HistoryStruct{
+    string number;
+    int type;
+    // 0 - incomming
+    // 1 - outgoing
+    // 2 - not answered
+};
+
 
 
 

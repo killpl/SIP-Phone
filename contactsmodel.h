@@ -1,31 +1,42 @@
-#ifndef HISTORYMODEL_H
-#define HISTORYMODEL_H
+#ifndef CONTACTSMODEL_H
+#define CONTACTSMODEL_H
 
 #include <QAbstractTableModel>
-#include <QVector>
+#include <QMap>
+#include <QString>
+#include <vector>
+#include <iostream>
 #include <QStringList>
+
+#include <structs.h>
+
 #include <QMimeData>
 
-#include "structs.h"
+using namespace std;
 
-class HistoryModel : public QAbstractTableModel
+class ContactsModel : public QAbstractTableModel
 {
     Q_OBJECT
 
-    QVector<HistoryStruct> history;
-public:
+    QMap<string, ContactStruct> contacts;
 
-    explicit HistoryModel(QObject *parent = 0);
+public:
+    explicit ContactsModel(QObject *parent = 0);
+
     int rowCount(const QModelIndex &parent=QModelIndex()) const;
     int columnCount(const QModelIndex &parent=QModelIndex()) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role=Qt::DisplayRole) const;
 
+    Qt::DropActions supportedDragActions();
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
     QStringList mimeTypes() const;
     QMimeData* mimeData(const QModelIndexList &indexes) const;
 
-    void addItem(HistoryStruct s);
+    void addContact(ContactStruct c);
+    string findContact(string number);
 
 signals:
     
@@ -33,4 +44,4 @@ public slots:
     
 };
 
-#endif // HISTORYMODEL_H
+#endif // CONTACTSMODEL_H
