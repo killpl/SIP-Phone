@@ -3,11 +3,15 @@
 
 #include <QtXml>
 #include <QMap>
+#include <QDebug>
 
 #include <vector>
 
 #include "logger.h"
 #include "structs.h"
+
+#include <QVector>
+
 
 class configuration
 {    
@@ -18,7 +22,7 @@ class configuration
 
     // Mapa wartosci ustawien
     QMap<QString, QVariant> settingsMap;
-    vector<RegistrationStruct> registrations;
+    QVector<RegistrationStruct> registrations;
 
 
 public:
@@ -27,17 +31,15 @@ public:
         return instance;
     }
 
-
     bool loadConfiguration(string filename);
     bool saveConfiguration(string filename);
 
-    vector<RegistrationStruct> getRegistrations();
-    void setRegistrations(vector<RegistrationStruct> regs);
+    QVector<RegistrationStruct> getRegistrations();
+    void setRegistrations(QVector<RegistrationStruct> regs);
 
     // Pobieranie konkretnych wartości
     void set(QString name, QVariant value);
     QVariant get(QString name);
-
 };
 
 #endif // CONFIGURATION_H

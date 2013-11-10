@@ -4,7 +4,6 @@ configuration::configuration()
 {
 }
 
-
 bool configuration::loadConfiguration(string filename){
     QDomDocument document;
 
@@ -20,14 +19,60 @@ bool configuration::loadConfiguration(string filename){
     QDomElement docElem = document.documentElement();
     QDomNode n = docElem.firstChild();
     while(!n.isNull()) {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
+        QDomElement e = n.toElement();
         if(!e.isNull()) {
-            cout << qPrintable(e.tagName()) << endl; // the node really is an element.
+            if(e.tagName()=="Registrations"){
+                QDomNode nodes = n.firstChild();
+                while(!nodes.isNull()){
+                    if(!nodes.toElement().isNull() && nodes.toElement().tagName()=="Registration"){
+                        RegistrationStruct r;
+                        QDomNode regNode = nodes.firstChild();
+                        while(!regNode.isNull()){
+                            QDomElement el = regNode.toElement();
+                            if(!el.isNull()){
+                                if(el.tagName()=="aor")
+                                    r.aor = el.text().toStdString();
+
+                                if(el.tagName()=="authID")
+                                    r.authID = el.text().toStdString();
+
+                                if(el.tagName()=="local_party_name")
+                                    r.local_party_name = el.text().toStdString();
+
+                                if(el.tagName()=="password")
+                                    r.password = el.text().toStdString();
+
+                                if(el.tagName()=="proxy_address")
+                                    r.proxy_address = el.text().toStdString();
+
+                                if(el.tagName()=="registrar_address")
+                                     r.registrar_address = el.text().toStdString();
+                                }
+                                regNode = regNode.nextSibling();
+                            }
+                            r.active = false;
+                            registrations.push_back(r);
+                        }
+                    nodes = nodes.nextSibling();
+                    }
+            }
+
+            if(e.tagName()=="Settings"){
+                QDomNode nodes = n.firstChild();
+                while(!nodes.isNull()){
+                    QDomElement el = nodes.toElement();
+                    if(!el.isNull()){
+                        // TODO: QVariant?
+                        settingsMap.insert(el.tagName(), el.text());
+                        nodes = nodes.nextSibling();
+                    }
+            }
+            }
+
+            qDebug() << qPrintable(e.tagName());
         }
         n = n.nextSibling();
     }
-
-
 
     return true;
 }
@@ -86,22 +131,25 @@ bool configuration::saveConfiguration(string filename){
         settings.appendChild(elem);
     }
 
-    qDebug() << doc.toString();
+    //qDebug() << doc.toString();
 
     QFile file(filename.c_str());
-
-    // TODO check if open
     file.open(QIODevice::WriteOnly);
-    QTextStream out(&file);
-    out << doc.toString();
-    file.close();
+
+    if(file.isOpen()){
+        QTextStream out(&file);
+        out << doc.toString();
+        file.close();
+    } else {
+        // TODO: error info
+    }
 }
 
-vector<RegistrationStruct> configuration::getRegistrations(){
+QVector<RegistrationStruct> configuration::getRegistrations(){
     return registrations;
 }
 
-void configuration::setRegistrations(vector<RegistrationStruct> regs){
+void configuration::setRegistrations(QVector<RegistrationStruct> regs){
     registrations = regs;
 }
 

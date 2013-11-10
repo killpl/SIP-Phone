@@ -20,17 +20,32 @@ void phoneSIPEndpoint::OnRegistered(const PString &aor, PBoolean wasRegistering)
         m->notifyRegChange();
     }
 
+    cout << "On registered" << endl;
+
     SIPEndPoint::OnRegistered(aor, wasRegistering);
 }
 
 void phoneSIPEndpoint::OnRegistrationFailed(const PString &aor, SIP_PDU::StatusCodes reason, PBoolean wasRegistering){
-    // TODO
+    if(registrations.find(aor)!=registrations.end()){
+        registrations.at(aor).active = false;
 
+        phoneManager* m = dynamic_cast<phoneManager*>(&(this->GetManager()));
+        if(m!=NULL){
+            m->notifyRegChange();
+        }
+    } else {
+        cout << "ERROR ERROR" << endl;
+    }
+
+    cout << "Registration failed" << endl;
+
+    SIPEndPoint::OnRegistrationFailed(aor, reason, wasRegistering);
 }
 
 void phoneSIPEndpoint::OnRegistrationStatus(const RegistrationStatus &status){
     // TODO
-
+    cout << status.m_reason << " " << status.m_wasRegistering << endl;
+    SIPEndPoint::OnRegistrationStatus(status);
 }
 
 bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned expire =200, const PTimeInterval &minRetryTime =0, const PTimeInterval &maxRetryTime=0){
@@ -44,11 +59,29 @@ bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const 
     r.authID = (const char*)autName;
     r.password = (const char*)password;
     r.registrar_address = (const char*)host;
-    r.user_agent = (const char*)user;
+    r.active = false;
+    //r.user_agent = (const char*)user;
 
     PString aor = r.aor.c_str();
 
     registrations.insert(pair<PString, RegistrationStruct>(aor, r));
 
+    cout << host << user << autName << password << endl;
+
     return SIPEndPoint::Register(host, user, autName, password, authRealm);
+}
+
+bool phoneSIPEndpoint::Unregister(const PString &aor){
+    cout << "Unregister" << endl;
+
+    if(registrations.find(aor)!=registrations.end()){
+        registrations.erase(registrations.find(aor));
+
+        phoneManager* m = dynamic_cast<phoneManager*>(&(this->GetManager()));
+        if(m!=NULL){
+            m->notifyRegChange();
+        }
+    }
+
+    return SIPEndPoint::Unregister(aor);
 }

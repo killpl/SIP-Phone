@@ -9,7 +9,7 @@ using namespace std;
 
 struct RegistrationStruct{
     string aor;
-    string user_agent;
+    //string user_agent;
     string registrar_address;
     string proxy_address; // If differet than registrar
     string local_party_name;

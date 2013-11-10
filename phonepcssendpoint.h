@@ -1,7 +1,7 @@
 #ifndef PHONEPCSSENDPOINT_H
 #define PHONEPCSSENDPOINT_H
 
-#include <ep/pcss.h>
+#include <opal/pcss.h>
 
 class phonePCSSEndpoint : public OpalPCSSEndPoint
 {

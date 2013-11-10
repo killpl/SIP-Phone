@@ -1,0 +1,56 @@
+/*
+QPushButton{
+    border: 1px solid gray;
+    background: black;
+    border-radius: 1px;
+    color: white;
+    padding: 5px;
+}
+
+QWidget{
+    background: black;
+    color: white;
+}
+
+QLabel{
+    background-color: #333;
+    color: white;
+    border-radius: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+QLineEdit{
+    padding: 5px;
+}
+
+ QTabWidget::pane { /* The tab widget frame */
+     background-color: #333;
+     color: white;
+ }
+
+ QTabWidget::tab-bar {
+     background-color: #333;
+     color: white;
+ }
+
+ QTabBar::tab {
+     background-color: #333;
+     color: white;
+ }
+
+ QTabBar::tab:selected, QTabBar::tab:hover {
+     background-color: #333;
+     color: white;
+ }
+
+ QTabBar::tab:selected {
+     background-color: #333;
+     color: white;
+ }
+
+ QTabBar::tab:!selected {
+     background-color: #333;
+     color: white;
+ }
+ */

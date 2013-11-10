@@ -55,6 +55,7 @@ public:
 
     // Rejestracja do serwera
     bool Register(string host, string user, string auth, string password, string realm);
+    bool Register(RegistrationStruct r);
     bool Unregister(RegistrationStruct r);
     map<PString, RegistrationStruct> getRegistrations();
 

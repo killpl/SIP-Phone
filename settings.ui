@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
+    <width>771</width>
     <height>472</height>
    </rect>
   </property>
@@ -28,12 +28,54 @@
      <item>
       <widget class="QTabWidget" name="tabWidgetSettings">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="registrations">
         <attribute name="title">
          <string>Rejestracje</string>
         </attribute>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayoutRegistrations">
+           <item row="0" column="1">
+            <widget class="QPushButton" name="pushButtonRemoveRegistration">
+             <property name="text">
+              <string>Usuń</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButtonAddRegistration">
+             <property name="text">
+              <string>Dodaj</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableView" name="tableViewRegistrations">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::SingleSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="settings">
         <attribute name="title">
@@ -128,7 +170,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Porty TCP</string>
+              <string/>
              </property>
             </widget>
            </item>

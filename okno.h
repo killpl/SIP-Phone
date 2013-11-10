@@ -9,6 +9,7 @@
 #include "ContactDelegate.h"
 #include "contactsmodel.h"
 #include "settings.h"
+#include "configuration.h"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ class Okno : public QMainWindow
     Q_OBJECT
 
     phoneManager* manager;
+
+    Settings* settings;
     
     enum StatesUI{
         Idle,
@@ -46,9 +49,10 @@ public:
     void onCallsUpdate();
     void onRegistrationsUpdate();
 
-
-
 private slots:
+    void RegistrationAdd(RegistrationStruct r);
+    void RegistrationRemove(RegistrationStruct r);
+
     void on_pushButton_Call_clicked();
 
     void on_pushButton_1_clicked();

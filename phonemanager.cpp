@@ -30,9 +30,7 @@ phoneManager::phoneManager():OpalManager()
     SetAutoStartReceiveVideo(false);
     SetAutoStartTransmitVideo(false);
 
-    //sipEP->Register(PString("sip.actio.pl"), PString("48858743092"),PString("48858743092"), PString(), PString(), 0);
-    sipEP->Register(PString("192.168.2.1"), PString("sip:101@192.168.2.1"),PString("101"), PString("secret101"), PString("asterisk"), 3600, PTimeInterval(), PTimeInterval());
-    sipEP->Register(PString("sip.actio.pl"), PString("48858743092"), PString("48858743092") ,PString("haslovoiptrx"),PString(""), 3600, PTimeInterval(), PTimeInterval() );
+    //sipEP->Register(PString("192.168.2.23"), PString("sip:101@192.168.2.23"),PString("101"), PString("secret101"), PString("asterisk"), 3600, PTimeInterval(), PTimeInterval());
 }
 
 // Zadzwon z pierwszego dostepnego numeru na podany numer
@@ -73,6 +71,7 @@ string phoneManager::Call(string registration, string number){
 
         RegistrationStruct r = mapa.at(registration);
 
+        // TODO: Calling party name
         OpalCall* call = this->SetUpCall(PString(number.c_str()),registration);
         if(call!=NULL){
             string token = call->GetToken();
@@ -128,13 +127,21 @@ bool phoneManager::Hold(string token){
 
 // Server registration
 bool phoneManager::Register(string host, string user, string auth, string password, string realm){
-
     return sipEP->Register(PString(host.c_str()), PString(user.c_str()), PString(auth.c_str()), PString(password.c_str()), PString(realm.c_str()),0,PTimeInterval(), PTimeInterval());
+}
 
+bool phoneManager::Register(RegistrationStruct r){
+    // TODO: proxy address
+    return sipEP->Register(PString(r.registrar_address.c_str()), PString(r.aor.c_str()), PString(r.authID.c_str()), PString(r.password.c_str()), PString(""),0,PTimeInterval(), PTimeInterval());
 }
 
 bool phoneManager::Unregister(RegistrationStruct r){
-    return sipEP->Unregister(r.aor);
+
+    string aor2 = r.aor;
+    if(aor2.find("sip:") == aor2.npos)
+        aor2 = "sip:"+aor2+"@"+r.registrar_address;
+
+    return sipEP->Unregister(aor2.c_str());
 }
 
 map<PString, RegistrationStruct> phoneManager::getRegistrations(){
@@ -151,14 +158,7 @@ OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &co
     string token = connection.GetCall().GetToken();
 
     logger::instance().log(4, "onAnswerCall " + token);
-/*
-    if(calls.find(token)!=calls.end()){
-        calls.at(token)->active = true;
-    } else {
-        cout << "Warning [onEstablished], call not found" << endl;
-    }
-    notifyCallChange();
-*/
+
     return OpalManager::OnAnswerCall(connection, caller);
 }
 
@@ -222,7 +222,7 @@ PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned optio
         s->active = false;
         s->hold = false;
         s->incoming = true;
-        string pb = conn.GetCall().GetPartyA(), pa = conn.GetCall().GetRemoteParty();
+        string pb = conn.GetCall().GetPartyA(), pa = conn.GetCall().GetPartyB();
         s->partyA = pa;
         s->partyB = pb;
         //cout << pa << "]\n[" << pb << endl;

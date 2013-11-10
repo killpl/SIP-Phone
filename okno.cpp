@@ -8,6 +8,8 @@ Okno::Okno(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    configuration::instance().loadConfiguration("test.xml");
+
     // Startowe ustawienia okna
     ui->widgetRight->hide();
     setFixedWidth(260);
@@ -25,9 +27,6 @@ Okno::Okno(QWidget *parent) :
     ob->setListener(this);
     manager->registerRegsObserver(ob);
 
-
-
-
     ui->listViewAddressbook->setModel(new contactsModel(this));
     ui->listViewAddressbook->setDragEnabled(true);
     ui->listViewAddressbook->setItemDelegate(new ContactDelegate(this));
@@ -35,14 +34,25 @@ Okno::Okno(QWidget *parent) :
     ui->listViewAddressbook->setAcceptDrops(false);
     ui->listViewAddressbook->setDragDropMode(QAbstractItemView::DragOnly);
 
+
+    settings = new Settings(NULL);
+
+    connect(settings, SIGNAL(Register(RegistrationStruct)), this, SLOT(RegistrationAdd(RegistrationStruct)));
+    connect(settings, SIGNAL(Unregister(RegistrationStruct)), this, SLOT(RegistrationRemove(RegistrationStruct)));
+
     StateChange(Idle);
 
+    connect(ui->actionZamknij, SIGNAL(changed()), this, SLOT(close()));
+
+    settings->registerAll();
 }
 
 Okno::~Okno()
 {
+    manager->ShutDownEndpoints();
     delete ui;
     delete manager;
+    delete settings;
 }
 
 void Okno::StateChange(StatesUI state){
@@ -54,20 +64,26 @@ void Okno::StateChange(StatesUI state){
         ui->lineEditNumber->setDisabled(false);
         ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(false);
+        ui->pushButton_Clear->setEnabled(true);
         ui->lineEditNumber->setText("");
+        ui->pushButton_Call->setText("C");
         break;
 
     case Incomming:
+        ui->pushButton_Call->setText("A");
     case Calling:
         ui->lineEditNumber->setDisabled(true);
         ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(true);
+        ui->pushButton_Clear->setEnabled(false);
+
         break;
 
     case OnHold:
         ui->lineEditNumber->setDisabled(false);
         ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(false);
+
         break;
 
     case InCall:
@@ -75,16 +91,20 @@ void Okno::StateChange(StatesUI state){
         ui->pushButton_Call->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(true);
+        ui->pushButton_Clear->setEnabled(false);
+        ui->pushButton_Call->setText("C");
         break;
 
+    case Error:
+        break;
     }
 }
 
 void Okno::on_pushButton_Call_clicked()
 {
     if(currentState==Idle){
-        //activeCall = manager->Call("sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
-        activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),"sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.1");
+        // TODO: ip do dzwonienia
+        activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),"sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.23");
         if(activeCall!="")
             StateChange(Calling);
         else
@@ -232,12 +252,21 @@ void Okno::onRegistrationsUpdate(){
 
     ui->comboBoxCallingNumber->clear();
     for(map<PString, RegistrationStruct>::iterator it = regs.begin(); it!=regs.end(); it++){
-        ui->comboBoxCallingNumber->addItem((*it).second.aor.c_str());
+        if(it->second.active==true)
+            ui->comboBoxCallingNumber->addItem((*it).second.aor.c_str());
     }
     ui->comboBoxCallingNumber->setCurrentIndex(0);
 }
 
 void Okno::on_actionKonfiguracja_programu_2_triggered()
 {
-    (new Settings(NULL))->show();
+    settings->show();
+}
+
+void Okno::RegistrationAdd(RegistrationStruct r){
+    manager->Register(r);
+}
+
+void Okno::RegistrationRemove(RegistrationStruct r){
+    manager->Unregister(r);
 }

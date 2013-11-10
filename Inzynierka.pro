@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     contactsmodel.cpp \
     configuration.cpp \
     settings.cpp \
-    ContactDelegate.cpp
+    registrationsmodel.cpp \
+    contactdelegate.cpp \
+    historymodel.cpp
 
 HEADERS  += okno.h \
     phonemanager.h \
@@ -35,24 +37,32 @@ HEADERS  += okno.h \
     configuration.h \
     structs.h \
     settings.h \
-    ContactDelegate.h
+    contactdelegate.h \
+    registrationsmodel.h \
+    historymodel.h
 
 FORMS    += okno.ui \
     settings.ui
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/local/lib/release/ -lopal
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../usr/local/lib/debug/ -lopal
+RESOURCES += \
+    Resources.qrc
+
+OTHER_FILES += \
+    style.qss
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/lib64/ -lopal
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../usr/lib64/ -lopald
 else:symbian: LIBS += -lopal
-else:unix: LIBS += -L$$PWD/../../../usr/local/lib/ -lopal
+else:unix: LIBS += -L$$PWD/../../../usr/lib64/ -lopal
 
-INCLUDEPATH += $$PWD/../../../usr/local/include/opal
-DEPENDPATH += $$PWD/../../../usr/local/include/opal
+INCLUDEPATH += $$PWD/../../../usr/include/opal
+DEPENDPATH += $$PWD/../../../usr/include/opal
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/local/lib/release/ -lpt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../usr/local/lib/debug/ -lpt
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/lib64/ -lpt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../usr/lib64/ -lptd
 else:symbian: LIBS += -lpt
-else:unix: LIBS += -L$$PWD/../../../usr/local/lib/ -lpt
+else:unix: LIBS += -L$$PWD/../../../usr/lib64/ -lpt
 
-INCLUDEPATH += $$PWD/../../../usr/local/include
-DEPENDPATH += $$PWD/../../../usr/local/include
+INCLUDEPATH += $$PWD/../../../usr/lib64
+DEPENDPATH += $$PWD/../../../usr/lib64
