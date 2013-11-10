@@ -45,12 +45,16 @@ class Okno : public QMainWindow
 
     void setNumberText(QString text);
 
+    ContactsModel* cModel;
+    HistoryModel* hModel;
+
 public:
     explicit Okno(QWidget *parent = 0);
     ~Okno();
     
     void onCallsUpdate();
     void onRegistrationsUpdate();
+    void onHistoryUpdate();
 
 signals:
     void RegistrationSuccess(QString aor, QString registrar);

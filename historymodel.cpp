@@ -65,5 +65,7 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const{
 }
 
 void HistoryModel::addItem(HistoryStruct s){
+    this->beginInsertRows(QModelIndex(), history.size(),history.size());
     history.push_back(s);
+    this->endInsertRows();
 }

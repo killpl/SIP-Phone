@@ -11,3 +11,7 @@ void RegistrationObserver::notify(){
 void CallsObserver::notify(){
     o->onCallsUpdate();
 }
+
+void HistoryObserver::notify(){
+    o->onHistoryUpdate();
+}

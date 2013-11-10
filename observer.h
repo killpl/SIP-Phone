@@ -25,4 +25,8 @@ class CallsObserver : public Observer{
     virtual void notify();
 };
 
+class HistoryObserver : public Observer{
+    virtual void notify();
+};
+
 #endif // OBSERVER_H

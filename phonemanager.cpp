@@ -173,7 +173,17 @@ void phoneManager::OnClearedCall(OpalCall &call){
         logger::instance().log(4, "Warning [clearedCal], call not found");
     }
 
+    HistoryStruct s;
+    if(call.IsNetworkOriginated())
+        s.number = (const char*)call.GetPartyA();
+    else
+        s.number = (const char*)call.GetPartyB();
+    history.push_back(s);
+
+
     notifyCallChange();
+    notifyHistChange();
+
     OpalManager::OnClearedCall(call);
 }
 
@@ -243,6 +253,10 @@ void phoneManager::registerRegsObserver(Observer* o){
     regObservers.push_back(o);
 }
 
+ void phoneManager::registerHistObserver(Observer* o){
+    histObservers.push_back(o);
+ }
+
 void phoneManager::notifyCallChange(){
     vector<Observer*>::iterator it;
     for(it=callObservers.begin(); it!=callObservers.end(); it++){
@@ -253,6 +267,13 @@ void phoneManager::notifyCallChange(){
 void phoneManager::notifyRegChange(){
     vector<Observer*>::iterator it;
     for(it=regObservers.begin(); it!=regObservers.end(); it++){
+        (*it)->notify();
+    }
+}
+
+void phoneManager::notifyHistChange(){
+    vector<Observer*>::iterator it;
+    for(it=histObservers.begin(); it!=histObservers.end(); it++){
         (*it)->notify();
     }
 }
@@ -289,4 +310,10 @@ vector<CallStruct*> phoneManager::getActiveCalls(){
             v.push_back((*it).second);
     }
     return v;
+}
+
+vector<HistoryStruct> phoneManager::getCallsHistory(){
+    vector<HistoryStruct> copy = history;
+    history.clear();
+    return copy;
 }

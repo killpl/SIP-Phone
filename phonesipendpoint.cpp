@@ -48,7 +48,7 @@ void phoneSIPEndpoint::OnRegistrationStatus(const RegistrationStatus &status){
     SIPEndPoint::OnRegistrationStatus(status);
 }
 
-bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned expire =200, const PTimeInterval &minRetryTime =0, const PTimeInterval &maxRetryTime=0){
+bool phoneSIPEndpoint::Register(const PString &host, const PString &user, const PString &autName, const PString &password, const PString &authRealm, unsigned /*expire =200*/, const PTimeInterval &/*minRetryTime =0*/, const PTimeInterval &/*maxRetryTime=0*/){
     RegistrationStruct r;
 
     string aor2 = user;

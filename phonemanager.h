@@ -25,6 +25,7 @@ class phoneManager: public OpalManager
 private:
     vector<Observer*> callObservers;
     vector<Observer*> regObservers;
+    vector<Observer*> histObservers;
 
     string defaultServer;
 
@@ -33,9 +34,11 @@ private:
     phonePCSSEndpoint* pcssEP;
 
     map<string, CallStruct*> calls;
+    vector<HistoryStruct> history;
 
     void notifyCallChange();
     void notifyRegChange();
+    void notifyHistChange();
 
 public:
     phoneManager();
@@ -52,6 +55,7 @@ public:
     vector<CallStruct*> getIncommingCalls();
     vector<CallStruct*> getOutgoinCalls();
     vector<CallStruct*> getActiveCalls();
+    vector<HistoryStruct> getCallsHistory();
 
     // Rejestracja do serwera
     bool Register(string host, string user, string auth, string password, string realm);
@@ -61,6 +65,7 @@ public:
 
     void registerCallsObserver(Observer*);
     void registerRegsObserver(Observer*);
+    void registerHistObserver(Observer*);
 
     CallStruct* getCall(string token);
 

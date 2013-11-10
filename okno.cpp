@@ -27,15 +27,22 @@ Okno::Okno(QWidget *parent) :
     ob->setListener(this);
     manager->registerRegsObserver(ob);
 
-    ui->listViewAddressbook->setModel(new ContactsModel(this));
+    ob = new HistoryObserver();
+    ob->setListener(this);
+    manager->registerHistObserver(ob);
+
+    cModel = new ContactsModel(this);
+
+    ui->listViewAddressbook->setModel(cModel);
     ui->listViewAddressbook->setDragEnabled(true);
     ui->listViewAddressbook->setItemDelegate(new ContactDelegate(this));
     ui->listViewAddressbook->setDragEnabled(true);
     ui->listViewAddressbook->setAcceptDrops(false);
     ui->listViewAddressbook->setDragDropMode(QAbstractItemView::DragOnly);
 
+    hModel = new HistoryModel(this);
 
-    ui->tableViewHistory->setModel(new HistoryModel(this));
+    ui->tableViewHistory->setModel(hModel);
     ui->tableViewHistory->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
     ui->tableViewHistory->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
     ui->tableViewHistory->setColumnWidth(1, 50);
@@ -232,7 +239,6 @@ void Okno::onCallsUpdate(){
         CallStruct* c = *vIn.begin();
         activeCall = c->token;
         setNumberText(c->partyB.c_str());
-        //ui->lineEditNumber->setText(c->partyB.c_str());
 
         if(c->active)
             StateChange(InCall);
@@ -245,13 +251,19 @@ void Okno::onCallsUpdate(){
         StateChange(Idle);
         activeCall = "";
         ui->lineEditNumber->setText("");
-
     }
 
     // Backup
     if(activeCall=="" && manager->getActiveCalls().size()>0){
         activeCall = (*manager->getActiveCalls().begin())->token;
         StateChange(InCall);
+    }
+}
+
+void Okno::onHistoryUpdate(){
+    vector<HistoryStruct> hist = manager->getCallsHistory();
+    for(auto it=hist.begin(); it!=hist.end(); it++){
+        hModel->addItem(*it);
     }
 }
 
