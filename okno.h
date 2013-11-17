@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QAbstractItemView>
+#include <QMessageBox>
 
 #include "phonemanager.h"
 
@@ -13,6 +14,7 @@
 
 #include "settings.h"
 #include "configuration.h"
+#include "addcontact.h"
 
 using namespace std;
 
@@ -36,7 +38,7 @@ class Okno : public QMainWindow
         Calling,
         InCall,
         OnHold,
-        Error // TODO: StateChange for error
+        Error // TODO: Future - more errors
     };
 
     StatesUI currentState;
@@ -55,6 +57,7 @@ public:
     void onCallsUpdate();
     void onRegistrationsUpdate();
     void onHistoryUpdate();
+    void showMessage(QString text);
 
 signals:
     void RegistrationSuccess(QString aor, QString registrar);
@@ -85,8 +88,11 @@ private slots:
 
     void on_actionKonfiguracja_programu_2_triggered();
 
+    void on_pushButtonAdd_clicked();
+
 private:
     Ui::Okno *ui;
 };
 
 #endif // OKNO_H
+

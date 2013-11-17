@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>695</width>
-    <height>484</height>
+    <height>517</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -535,7 +535,26 @@
               </widget>
              </item>
              <item row="0" column="0" colspan="2">
-              <widget class="QTableView" name="tableViewHistory"/>
+              <widget class="QTableView" name="tableViewHistory">
+               <property name="dragEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="dragDropMode">
+                <enum>QAbstractItemView::DragOnly</enum>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="gridStyle">
+                <enum>Qt::NoPen</enum>
+               </property>
+               <property name="cornerButtonEnabled">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>

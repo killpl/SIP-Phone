@@ -3,12 +3,6 @@
 HistoryModel::HistoryModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    HistoryStruct s;
-    s.number= "123567890";
-    s.type = 0;
-    history.push_back(s);
-    s.type = 1;
-    history.push_back(s);
 }
 
 int HistoryModel::rowCount(const QModelIndex &/*parent*/) const{
@@ -51,15 +45,28 @@ QStringList HistoryModel::mimeTypes() const{
     return types;
 }
 
+Qt::DropActions HistoryModel::supportedDragActions(){
+     return Qt::CopyAction | Qt::MoveAction;
+}
+
+Qt::ItemFlags HistoryModel::flags(const QModelIndex &index) const{
+        Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
+
+        if (index.isValid())
+            return Qt::ItemIsDragEnabled | defaultFlags;
+        else
+            return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
 QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const{
 
     QMimeData *mimeData = new QMimeData();
 
-    /*foreach (QModelIndex index, indexes) {
+    foreach (QModelIndex index, indexes) {
         if (index.isValid()) {
-            mimeData->setText(data(index, Qt::DisplayRole).toStringList()[2]);
+            mimeData->setText(history[index.row()].number.c_str());
         }
-    }*/
+    }
 
     return mimeData;
 }

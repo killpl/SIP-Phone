@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     settings.cpp \
     registrationsmodel.cpp \
     contactdelegate.cpp \
-    historymodel.cpp
+    historymodel.cpp \
+    addcontact.cpp
 
 HEADERS  += okno.h \
     phonemanager.h \
@@ -39,10 +40,12 @@ HEADERS  += okno.h \
     settings.h \
     contactdelegate.h \
     registrationsmodel.h \
-    historymodel.h
+    historymodel.h \
+    addcontact.h
 
 FORMS    += okno.ui \
-    settings.ui
+    settings.ui \
+    addcontact.ui
 
 
 RESOURCES += \

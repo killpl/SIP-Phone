@@ -62,7 +62,6 @@ bool configuration::loadConfiguration(string filename){
                 while(!nodes.isNull()){
                     QDomElement el = nodes.toElement();
                     if(!el.isNull()){
-                        // TODO: QVariant?
                         settingsMap.insert(el.tagName(), el.text());
                         nodes = nodes.nextSibling();
                     }
@@ -141,7 +140,7 @@ bool configuration::saveConfiguration(string filename){
         out << doc.toString();
         file.close();
     } else {
-        // TODO: error info
+        logger::instance().log(1, "Configuration file not found");
     }
 }
 

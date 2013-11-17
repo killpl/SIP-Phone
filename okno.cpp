@@ -117,19 +117,41 @@ void Okno::StateChange(StatesUI state){
 
 void Okno::on_pushButton_Call_clicked()
 {
-    if(currentState==Idle){
-        // TODO: ip do dzwonienia
-        activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),"sip:" + ui->lineEditNumber->text().toStdString()+"@192.168.2.23");
+    QString number = ui->lineEditNumber->text();
+
+    if(currentState==Idle && ui->comboBoxCallingNumber->currentText()!=""){
+
+        QString ip = "";
+        map<PString, RegistrationStruct> regs = manager->getRegistrations();
+        if(regs.find(ui->comboBoxCallingNumber->currentText().toStdString())!=regs.end()){
+            ip = regs.at(ui->comboBoxCallingNumber->currentText().toStdString()).registrar_address.c_str();
+        }
+
+        if(!number.contains("sip:"))
+            number = "sip:" + number;
+        if(!number.contains("@")){
+            number = number + "@" + ip;
+        }
+
+        activeCall = manager->Call(ui->comboBoxCallingNumber->currentText().toStdString(),number.toStdString());
         if(activeCall!="")
             StateChange(Calling);
         else
         {
-            // TODO: Error message
+            showMessage("Nie udało się utworzyć połączenia z " + number);
+
             StateChange(Idle);
         }
     }
+
     if(currentState==Incomming)
         manager->Answer(activeCall);
+}
+
+void Okno::showMessage(QString text){
+    QMessageBox* msg = new QMessageBox(this);
+    msg->setText(text);
+    msg->show();
 }
 
 void Okno::on_pushButton_Hangup_clicked()
@@ -293,4 +315,10 @@ void Okno::RegistrationAdd(RegistrationStruct r){
 
 void Okno::RegistrationRemove(RegistrationStruct r){
     manager->Unregister(r);
+}
+
+void Okno::on_pushButtonAdd_clicked()
+{
+    AddContact* cWnd = new AddContact(NULL);
+    cWnd->show();
 }

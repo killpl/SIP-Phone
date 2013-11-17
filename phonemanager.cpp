@@ -70,9 +70,9 @@ string phoneManager::Call(string registration, string number){
     if(mapa.find(registration)!=mapa.end()){
 
         RegistrationStruct r = mapa.at(registration);
+        string caller = r.aor.substr(4,r.aor.find("@")-4);
 
-        // TODO: Calling party name
-        OpalCall* call = this->SetUpCall(PString(number.c_str()),registration);
+        OpalCall* call = this->SetUpCall(PString((number+";OPAL-Calling-Party-Number="+caller+";").c_str()),registration);
         if(call!=NULL){
             string token = call->GetToken();
 
@@ -98,7 +98,6 @@ bool phoneManager::Answer(string token){
 
 // Zakoncz polaczenie
 bool phoneManager::Hangup(string token){
-    //OpalCall * call = FindCallWithLock(token.c_str());
     return ClearCall(token.c_str());
 }
 
@@ -108,7 +107,7 @@ bool phoneManager::Reject(string token){
 }
 
 bool phoneManager::Transfer(string /*token*/, string /*destination*/){
-    // TODO:
+    // TODO: Future
     return false;
 }
 
@@ -126,13 +125,12 @@ bool phoneManager::Hold(string token){
 
 
 // Server registration
-bool phoneManager::Register(string host, string user, string auth, string password, string realm){
-    return sipEP->Register(PString(host.c_str()), PString(user.c_str()), PString(auth.c_str()), PString(password.c_str()), PString(realm.c_str()),0,PTimeInterval(), PTimeInterval());
+bool phoneManager::Register(string host, string proxy, string user, string auth, string password, string realm){
+    return sipEP->Register(PString(host.c_str()),PString(proxy.c_str()), PString(user.c_str()), PString(auth.c_str()), PString(password.c_str()), PString(realm.c_str()),0,PTimeInterval(), PTimeInterval());
 }
 
 bool phoneManager::Register(RegistrationStruct r){
-    // TODO: proxy address
-    return sipEP->Register(PString(r.registrar_address.c_str()), PString(r.aor.c_str()), PString(r.authID.c_str()), PString(r.password.c_str()), PString(""),0,PTimeInterval(), PTimeInterval());
+    return sipEP->Register(PString(r.registrar_address.c_str()),PString(r.proxy_address.c_str()), PString(r.aor.c_str()), PString(r.authID.c_str()), PString(r.password.c_str()), PString(""),0,PTimeInterval(), PTimeInterval());
 }
 
 bool phoneManager::Unregister(RegistrationStruct r){
@@ -174,10 +172,18 @@ void phoneManager::OnClearedCall(OpalCall &call){
     }
 
     HistoryStruct s;
-    if(call.IsNetworkOriginated())
+    s.type = 0;
+    if(call.IsNetworkOriginated()){
         s.number = (const char*)call.GetPartyA();
-    else
+        s.type = 1;
+    }
+    else{
         s.number = (const char*)call.GetPartyB();
+        s.type = 2;
+    }
+
+    //cout << call.GetCallEndReason() << " " << call.GetCallEndReasonText() << endl;
+
     history.push_back(s);
 
 
