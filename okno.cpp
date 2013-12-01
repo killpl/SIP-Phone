@@ -7,8 +7,9 @@ Okno::Okno(QWidget *parent) :
     ui(new Ui::Okno)
 {
     ui->setupUi(this);
+    this->statusBar()->setSizeGripEnabled(false);
 
-    configuration::instance().loadConfiguration("test.xml");
+    configuration::instance().loadConfiguration("config.xml");
 
     // Startowe ustawienia okna
     ui->widgetRight->hide();
@@ -32,6 +33,9 @@ Okno::Okno(QWidget *parent) :
     manager->registerHistObserver(ob);
 
     cModel = new ContactsModel(this);
+    foreach(ContactStruct c, configuration::instance().getAdddressbook()){
+        cModel->addContact(c);
+    }
 
     ui->listViewAddressbook->setModel(cModel);
     ui->listViewAddressbook->setDragEnabled(true);
@@ -47,7 +51,8 @@ Okno::Okno(QWidget *parent) :
     ui->tableViewHistory->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
     ui->tableViewHistory->setColumnWidth(1, 50);
 
-    settings = new Settings(NULL);
+    settings = new Settings(manager,NULL);
+    settings->loadSettings();
 
     connect(settings, SIGNAL(Register(RegistrationStruct)), this, SLOT(RegistrationAdd(RegistrationStruct)));
     connect(settings, SIGNAL(Unregister(RegistrationStruct)), this, SLOT(RegistrationRemove(RegistrationStruct)));
@@ -64,7 +69,10 @@ Okno::Okno(QWidget *parent) :
 
 Okno::~Okno()
 {
-    manager->ShutDownEndpoints();
+    configuration::instance().setAddressbook(cModel->getContacts());
+    configuration::instance().saveConfiguration("config.xml");
+    //manager->unregisterAll();
+    //manager->ShutDownEndpoints();
     delete ui;
     delete manager;
     delete settings;
@@ -319,6 +327,13 @@ void Okno::RegistrationRemove(RegistrationStruct r){
 
 void Okno::on_pushButtonAdd_clicked()
 {
-    AddContact* cWnd = new AddContact(NULL);
+    AddContact* cWnd = new AddContact(cModel, NULL);
     cWnd->show();
+}
+
+void Okno::on_pushButtonRemove_clicked()
+{
+    foreach(QModelIndex index, ui->listViewAddressbook->selectionModel()->selectedIndexes()){
+        cModel->removeContact(index);
+    }
 }

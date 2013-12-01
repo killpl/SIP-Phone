@@ -19,6 +19,7 @@
 using namespace std;
 
 class phoneManager;
+class Settings;
 
 namespace Ui {
 class Okno;
@@ -83,12 +84,10 @@ private slots:
     void on_pushButton_Backspace_clicked();
     void on_pushButton_Clear_clicked();
     void on_pushButton_Hangup_clicked();
-
     void on_pushButtonToggleRight_clicked();
-
     void on_actionKonfiguracja_programu_2_triggered();
-
     void on_pushButtonAdd_clicked();
+    void on_pushButtonRemove_clicked();
 
 private:
     Ui::Okno *ui;

@@ -64,8 +64,26 @@ bool configuration::loadConfiguration(string filename){
                     if(!el.isNull()){
                         settingsMap.insert(el.tagName(), el.text());
                         nodes = nodes.nextSibling();
+                        qDebug() << el.tagName() << el.text();
                     }
+                }
             }
+
+            if(e.tagName()=="Addressbook"){
+                QDomNode nodes = n.firstChild();
+                while(!nodes.isNull()){
+                    QDomElement el = nodes.toElement();
+                    if(!el.isNull()){
+                        ContactStruct c;
+                        c.name = el.attribute("Name").toStdString();
+                        c.email = el.attribute("Email").toStdString();
+                        c.number = el.attribute("Number").toStdString();
+
+                        contacts.push_back(c);
+
+                        nodes = nodes.nextSibling();
+                    }
+                }
             }
 
             qDebug() << qPrintable(e.tagName());
@@ -130,6 +148,17 @@ bool configuration::saveConfiguration(string filename){
         settings.appendChild(elem);
     }
 
+    QDomElement addressbook = doc.createElement("Addressbook");
+    root.appendChild(addressbook);
+
+    for(auto it = contacts.begin(); it!=contacts.end(); it++){
+        QDomElement elem = doc.createElement("Contact");
+        elem.setAttribute("Name", it->name.c_str());
+        elem.setAttribute("Email", it->email.c_str());
+        elem.setAttribute("Number", it->number.c_str());
+        addressbook.appendChild(elem);
+    }
+
     //qDebug() << doc.toString();
 
     QFile file(filename.c_str());
@@ -141,7 +170,10 @@ bool configuration::saveConfiguration(string filename){
         file.close();
     } else {
         logger::instance().log(1, "Configuration file not found");
+        return false;
     }
+
+    return true;
 }
 
 QVector<RegistrationStruct> configuration::getRegistrations(){
@@ -157,5 +189,13 @@ void configuration::set(QString name, QVariant value){
 }
 
 QVariant configuration::get(QString name){
-    //return settingsMap.find(name);
+    return settingsMap[name];
+}
+
+void configuration::setAddressbook(QVector<ContactStruct> history){
+    this->contacts = history;
+}
+
+QVector<ContactStruct> configuration::getAdddressbook(){
+    return contacts;
 }

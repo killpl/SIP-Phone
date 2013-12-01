@@ -4,6 +4,7 @@
 
 phoneManager::phoneManager():OpalManager()
 {
+    listener = NULL;
     // Utworzenie endpointow
     sipEP = new phoneSIPEndpoint(*this);
     pcssEP = new phonePCSSEndpoint(*this);
@@ -23,7 +24,7 @@ phoneManager::phoneManager():OpalManager()
 
     // Utworzenie portu nasluchujacego sip (5060)
     PIPSocket::Address addr = INADDR_ANY;
-    OpalListenerUDP *listener = new OpalListenerUDP(*sipEP, addr, 5065);
+    listener = new OpalListenerUDP(*sipEP, addr, 5060);
     sipEP->StartListener(listener);
 
     // Wylaczenie video
@@ -31,6 +32,11 @@ phoneManager::phoneManager():OpalManager()
     SetAutoStartTransmitVideo(false);
 
     //sipEP->Register(PString("192.168.2.23"), PString("sip:101@192.168.2.23"),PString("101"), PString("secret101"), PString("asterisk"), 3600, PTimeInterval(), PTimeInterval());
+}
+
+phoneManager::~phoneManager(){
+    sipEP->UnregisterAll();
+    this->ShutDownEndpoints();
 }
 
 // Zadzwon z pierwszego dostepnego numeru na podany numer
@@ -263,6 +269,10 @@ void phoneManager::registerRegsObserver(Observer* o){
     histObservers.push_back(o);
  }
 
+ void phoneManager::unregisterAll(){
+    sipEP->UnregisterAll();
+ }
+
 void phoneManager::notifyCallChange(){
     vector<Observer*>::iterator it;
     for(it=callObservers.begin(); it!=callObservers.end(); it++){
@@ -322,4 +332,20 @@ vector<HistoryStruct> phoneManager::getCallsHistory(){
     vector<HistoryStruct> copy = history;
     history.clear();
     return copy;
+}
+
+
+void phoneManager::setSIPPort(int port){
+
+    sipEP->StopListener(OpalTransportAddress());
+
+    PIPSocket::Address addr = INADDR_ANY;
+    if(listener!=NULL){
+        listener->Close();
+        delete listener;
+    }
+
+    listener = new OpalListenerUDP(*sipEP, addr, port);
+    sipEP->StartListener(listener);
+
 }

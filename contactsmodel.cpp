@@ -3,7 +3,7 @@
 ContactsModel::ContactsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    ContactStruct s;
+    /*ContactStruct s;
     s.email = "aaaa";
     s.name="bbb";
     s.number = "54353535";
@@ -12,7 +12,7 @@ ContactsModel::ContactsModel(QObject *parent) :
     s.email="cccccc";
     s.name="zzzzzz";
     s.number="5234234234";
-    contacts.insert(s.number, s);
+    contacts.insert(s.number, s);*/
 }
 
 int ContactsModel::rowCount(const QModelIndex &/*parent*/) const
@@ -71,7 +71,9 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
 
 
 void ContactsModel::addContact(ContactStruct c){
+    this->beginInsertRows(QModelIndex(),contacts.size(), contacts.size());
     contacts.insert(c.number, c);
+    this->endInsertRows();
 }
 
 Qt::DropActions ContactsModel::supportedDragActions(){
@@ -105,4 +107,16 @@ QMimeData* ContactsModel::mimeData(const QModelIndexList &indexes) const{
     }
 
     return mimeData;
+}
+
+void ContactsModel::removeContact(QModelIndex index){
+    if(index.isValid()){
+        beginRemoveRows(QModelIndex(), index.row(), index.row());
+        contacts.remove(data(index).toStringList()[2].toStdString());
+        endRemoveRows();
+    }
+}
+
+QVector<ContactStruct> ContactsModel::getContacts(){
+    return contacts.values().toVector();
 }

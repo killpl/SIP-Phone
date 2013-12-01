@@ -13,12 +13,12 @@ void RegistrationsModel::registerAll(){
     }
 }
 
-int RegistrationsModel::rowCount(const QModelIndex &parent) const
+int RegistrationsModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return registrations.size();
 }
 
-int RegistrationsModel::columnCount(const QModelIndex &parent) const
+int RegistrationsModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 7;
 }

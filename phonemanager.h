@@ -12,6 +12,7 @@
 #include "observer.h"
 #include "logger.h"
 #include "structs.h"
+#include "settings.h"
 
 #include <map>
 
@@ -21,6 +22,7 @@ class Observer;
 class phoneManager: public OpalManager
 {
     friend class phoneSIPEndpoint;
+    friend class Settings;
 
 private:
     vector<Observer*> callObservers;
@@ -28,10 +30,11 @@ private:
     vector<Observer*> histObservers;
 
     string defaultServer;
+    OpalListenerUDP *listener;
 
     // Endpoints
-    phoneSIPEndpoint* sipEP;
-    phonePCSSEndpoint* pcssEP;
+    phoneSIPEndpoint* sipEP = NULL;
+    phonePCSSEndpoint* pcssEP = NULL;
 
     map<string, CallStruct*> calls;
     vector<HistoryStruct> history;
@@ -42,6 +45,7 @@ private:
 
 public:
     phoneManager();
+    ~phoneManager();
 
     string  Call(string number);
     string Call(string register, string number);
@@ -62,10 +66,12 @@ public:
     bool Register(RegistrationStruct r);
     bool Unregister(RegistrationStruct r);
     map<PString, RegistrationStruct> getRegistrations();
-
     void registerCallsObserver(Observer*);
     void registerRegsObserver(Observer*);
     void registerHistObserver(Observer*);
+    void unregisterAll();
+
+    void setSIPPort(int port);
 
     CallStruct* getCall(string token);
 

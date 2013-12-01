@@ -4,5 +4,5 @@ phonePCSSEndpoint::phonePCSSEndpoint(OpalManager& manager):OpalPCSSEndPoint(mana
 {
 }
 
-PBoolean phonePCSSEndpoint::OnShowIncoming(const OpalPCSSConnection & connection) { return PTrue; }
-PBoolean phonePCSSEndpoint::OnShowOutgoing(const OpalPCSSConnection & connection) { return PTrue; }
+PBoolean phonePCSSEndpoint::OnShowIncoming(const OpalPCSSConnection & /*connection*/) { return PTrue; }
+PBoolean phonePCSSEndpoint::OnShowOutgoing(const OpalPCSSConnection & /*connection*/) { return PTrue; }

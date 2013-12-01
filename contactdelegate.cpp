@@ -7,7 +7,11 @@ ContactDelegate::ContactDelegate(QObject *parent):QStyledItemDelegate(parent)
 void ContactDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const{
 
     QRect r = option.rect;
-    painter->setBrush(QBrush(QColor(100,100,100,100)));
+    if(option.state & QStyle::State_Selected){
+        painter->setBrush(QBrush(QColor(200,200,200,100)));
+    } else{
+        painter->setBrush(QBrush(QColor(100,100,100,100)));
+    }
     painter->drawRoundedRect(QRect(r.x()+1, r.y()+1, r.width()-2, r.height()-2),3,3);
     painter->setBrush(QBrush(QColor(255,0,0,255)));
 
@@ -24,6 +28,6 @@ void ContactDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
 }
 
-QSize ContactDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const{
+QSize ContactDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const{
     return QSize(100,40);
 }

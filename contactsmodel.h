@@ -4,13 +4,14 @@
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QString>
-#include <vector>
-#include <iostream>
 #include <QStringList>
+#include <QVector>
+#include <QMimeData>
 
 #include <structs.h>
 
-#include <QMimeData>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -37,6 +38,9 @@ public:
 
     void addContact(ContactStruct c);
     string findContact(string number);
+    void removeContact(QModelIndex index);
+
+    QVector<ContactStruct> getContacts();
 
 signals:
     

@@ -16,6 +16,18 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>695</width>
+    <height>517</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>695</width>
+    <height>517</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Okno</string>
   </property>
@@ -531,6 +543,9 @@
                </property>
                <property name="dragDropMode">
                 <enum>QAbstractItemView::DragOnly</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
                </property>
               </widget>
              </item>

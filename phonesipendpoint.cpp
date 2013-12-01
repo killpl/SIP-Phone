@@ -5,6 +5,7 @@ phoneSIPEndpoint::phoneSIPEndpoint(OpalManager& manager):SIPEndPoint(manager)
 {
 }
 
+
 map<PString, RegistrationStruct> phoneSIPEndpoint::getRegistrations(){
     return registrations;
 }
@@ -67,8 +68,6 @@ bool phoneSIPEndpoint::Register(const PString &host, const PString &proxy, const
     PString aor = r.aor.c_str();
 
     registrations.insert(pair<PString, RegistrationStruct>(aor, r));
-
-    cout << host << user << autName << password << endl;
 
     return SIPEndPoint::Register(host, user, autName, password, authRealm);
 }

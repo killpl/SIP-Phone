@@ -23,6 +23,7 @@ class configuration
     // Mapa wartosci ustawien
     QMap<QString, QVariant> settingsMap;
     QVector<RegistrationStruct> registrations;
+    QVector<ContactStruct> contacts;
 
 
 public:
@@ -36,6 +37,9 @@ public:
 
     QVector<RegistrationStruct> getRegistrations();
     void setRegistrations(QVector<RegistrationStruct> regs);
+
+    void setAddressbook(QVector<ContactStruct> contacts);
+    QVector<ContactStruct> getAdddressbook();
 
     // Pobieranie konkretnych wartości
     void set(QString name, QVariant value);
