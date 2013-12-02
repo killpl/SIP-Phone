@@ -19,19 +19,17 @@ phoneManager::phoneManager():OpalManager()
     pcssEP->SetSoundChannelPlayDevice(PSoundChannel::GetDefaultDevice(PSoundChannel::Player));
 
     // Domyslny sposob obslugi rozmow przychodzacych
-    pcssEP->SetDeferredAlerting(false);
-    pcssEP->SetDeferredAnswer(true);
+    //pcssEP->SetDeferredAlerting(true);
+    //pcssEP->SetDeferredAnswer(true);
 
     // Utworzenie portu nasluchujacego sip (5060)
     PIPSocket::Address addr = INADDR_ANY;
-    listener = new OpalListenerUDP(*sipEP, addr, 5060);
+    listener = new OpalListenerUDP(*sipEP, addr, 5061);
     sipEP->StartListener(listener);
 
     // Wylaczenie video
     SetAutoStartReceiveVideo(false);
     SetAutoStartTransmitVideo(false);
-
-    //sipEP->Register(PString("192.168.2.23"), PString("sip:101@192.168.2.23"),PString("101"), PString("secret101"), PString("asterisk"), 3600, PTimeInterval(), PTimeInterval());
 }
 
 phoneManager::~phoneManager(){
@@ -161,6 +159,14 @@ void phoneManager::OnAlerting(OpalConnection &connection){
 OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &connection, const PString &caller){
     string token = connection.GetCall().GetToken();
 
+    if(calls.find(token)!=calls.end()){
+        calls.at(token)->active = true;
+    } else {
+        logger::instance().log(4,"Warning [onAnswer], call not found");
+    }
+
+    notifyCallChange();
+
     logger::instance().log(4, "onAnswerCall " + token);
 
     return OpalManager::OnAnswerCall(connection, caller);
@@ -225,8 +231,6 @@ void phoneManager::OnEstablishedCall(OpalCall &call){
         logger::instance().log(4,"Warning [onEstablished], call not found");
     }
 
-    cout << "Established" << endl;
-
     notifyCallChange();
     OpalManager::OnEstablishedCall(call);
 }
@@ -247,7 +251,6 @@ PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned optio
         string pb = conn.GetCall().GetPartyA(), pa = conn.GetCall().GetPartyB();
         s->partyA = pa;
         s->partyB = pb;
-        //cout << pa << "]\n[" << pb << endl;
 
         calls.insert(pair<string, CallStruct*>(token, s));
     }
@@ -337,7 +340,8 @@ vector<HistoryStruct> phoneManager::getCallsHistory(){
 
 void phoneManager::setSIPPort(int port){
 
-    sipEP->StopListener(OpalTransportAddress());
+    if(sipEP->GetDefaultListeners().GetSize()>0)
+        sipEP->StopListener(OpalTransportAddress(sipEP->GetDefaultListeners()[0]));
 
     PIPSocket::Address addr = INADDR_ANY;
     if(listener!=NULL){

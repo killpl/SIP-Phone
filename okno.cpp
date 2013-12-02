@@ -89,33 +89,41 @@ void Okno::StateChange(StatesUI state){
         ui->pushButton_Hangup->setEnabled(false);
         ui->pushButton_Clear->setEnabled(true);
         ui->lineEditNumber->setText("");
-        ui->pushButton_Call->setText("C");
+        ui->pushButton_Call->setText("Call");
+
         break;
 
     case Incomming:
-        ui->pushButton_Call->setText("A");
+        ui->pushButton_Call->setText("Answer");
+        ui->pushButton_Call->setEnabled(true);
+        ui->pushButton_Hangup->setEnabled(true);
+        ui->pushButton_Clear->setEnabled(false);
+
+        break;
+
     case Calling:
         ui->lineEditNumber->setDisabled(true);
-        ui->pushButton_Call->setEnabled(true);
+        ui->pushButton_Call->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(true);
         ui->pushButton_Clear->setEnabled(false);
 
         break;
 
     case OnHold:
-        ui->lineEditNumber->setDisabled(false);
+        ui->lineEditNumber->setDisabled(true);
         ui->pushButton_Call->setEnabled(true);
-        ui->pushButton_Hangup->setEnabled(false);
+        ui->pushButton_Hangup->setEnabled(true);
+        ui->pushButton_Call->setText("Retrieve");
 
         break;
 
     case InCall:
         ui->lineEditNumber->setDisabled(true);
-        ui->pushButton_Call->setEnabled(false);
+        ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(true);
         ui->pushButton_Clear->setEnabled(false);
-        ui->pushButton_Call->setText("C");
+        ui->pushButton_Call->setText("Hold");
         break;
 
     case Error:
@@ -152,8 +160,22 @@ void Okno::on_pushButton_Call_clicked()
         }
     }
 
-    if(currentState==Incomming)
+    if(currentState==Incomming){
         manager->Answer(activeCall);
+        return;
+    }
+
+    if(currentState==InCall){
+        manager->Hold(activeCall);
+        StateChange(OnHold);
+        return;
+    }
+
+    if(currentState==OnHold){
+         manager->Hold(activeCall);
+         StateChange(InCall);
+         return;
+    }
 }
 
 void Okno::showMessage(QString text){

@@ -191,7 +191,7 @@ void Settings::setRegistrarTTL(int min, int max){
 }
 
 void Settings::setSIPPort(int port){
-    //manager->setSIPPort(port);
+    manager->setSIPPort(port);
 }
 
 
