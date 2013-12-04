@@ -169,7 +169,11 @@
               </size>
              </property>
              <property name="text">
-              <string>C</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="Resources.qrc">
+               <normaloff>:/icons/icons/Call.png</normaloff>:/icons/icons/Call.png</iconset>
              </property>
             </widget>
            </item>
@@ -296,7 +300,11 @@
               </size>
              </property>
              <property name="text">
-              <string>X</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="Resources.qrc">
+               <normaloff>:/icons/icons/Clear.png</normaloff>:/icons/icons/Clear.png</iconset>
              </property>
             </widget>
            </item>
@@ -334,7 +342,11 @@
               </size>
              </property>
              <property name="text">
-              <string>H</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="Resources.qrc">
+               <normaloff>:/icons/icons/Hangup.png</normaloff>:/icons/icons/Hangup.png</iconset>
              </property>
             </widget>
            </item>
@@ -669,6 +681,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

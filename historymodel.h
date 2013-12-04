@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QStringList>
 #include <QMimeData>
+#include <QIcon>
 
 #include "structs.h"
 

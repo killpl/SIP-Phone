@@ -89,16 +89,16 @@ void Okno::StateChange(StatesUI state){
         ui->pushButton_Hangup->setEnabled(false);
         ui->pushButton_Clear->setEnabled(true);
         ui->lineEditNumber->setText("");
-        ui->pushButton_Call->setText("Call");
+        ui->pushButton_Call->setIcon(QIcon(":/icons/icons/Call.png"));
 
         break;
 
     case Incomming:
-        ui->pushButton_Call->setText("Answer");
         ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(true);
         ui->pushButton_Clear->setEnabled(false);
-
+        ui->pushButton_Call->setIcon(QIcon(":/icons/icons/Call.png"));
+        qDebug() << "Incomming" << endl;
         break;
 
     case Calling:
@@ -106,6 +106,7 @@ void Okno::StateChange(StatesUI state){
         ui->pushButton_Call->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(true);
         ui->pushButton_Clear->setEnabled(false);
+        ui->pushButton_Call->setIcon(QIcon(":/icons/icons/Call.png"));
 
         break;
 
@@ -113,7 +114,7 @@ void Okno::StateChange(StatesUI state){
         ui->lineEditNumber->setDisabled(true);
         ui->pushButton_Call->setEnabled(true);
         ui->pushButton_Hangup->setEnabled(true);
-        ui->pushButton_Call->setText("Retrieve");
+       ui->pushButton_Call->setIcon(QIcon(":/icons/icons/Retrieve.png"));
 
         break;
 
@@ -123,7 +124,7 @@ void Okno::StateChange(StatesUI state){
         ui->pushButton_Hangup->setEnabled(false);
         ui->pushButton_Hangup->setEnabled(true);
         ui->pushButton_Clear->setEnabled(false);
-        ui->pushButton_Call->setText("Hold");
+        ui->pushButton_Call->setIcon(QIcon(":/icons/icons/Hold.png"));
         break;
 
     case Error:
@@ -282,8 +283,6 @@ void Okno::setNumberText(QString text){
 }
 
 void Okno::onCallsUpdate(){
-    cout << "Calls update" << endl;
-
     vector<CallStruct*> vIn = manager->getIncommingCalls();
     vector<CallStruct*> vOut = manager->getOutgoinCalls();
 

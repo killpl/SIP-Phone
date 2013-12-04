@@ -45,7 +45,7 @@ string phoneManager::Call(string number){
 
             if((*it).second.active==true){
                 string t = (*it).first;
-                OpalCall* call = this->SetUpCall(PString(number.c_str()), PString(t));
+                OpalCall* call = this->SetUpCall(PString(t),PString(number.c_str()));
                 if(call!=NULL){
                     string token = call->GetToken();
 
@@ -76,7 +76,7 @@ string phoneManager::Call(string registration, string number){
         RegistrationStruct r = mapa.at(registration);
         string caller = r.aor.substr(4,r.aor.find("@")-4);
 
-        OpalCall* call = this->SetUpCall(PString((number+";OPAL-Calling-Party-Number="+caller+";").c_str()),registration);
+        OpalCall* call = this->SetUpCall("pc:",PString((number+";OPAL-Calling-Party-Number="+caller+";").c_str()));
         if(call!=NULL){
             string token = call->GetToken();
 
@@ -156,20 +156,12 @@ void phoneManager::OnAlerting(OpalConnection &connection){
     OpalManager::OnAlerting(connection);
 }
 
-OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &connection, const PString &caller){
+OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &connection, const PString &/*caller*/){
     string token = connection.GetCall().GetToken();
-
-    if(calls.find(token)!=calls.end()){
-        calls.at(token)->active = true;
-    } else {
-        logger::instance().log(4,"Warning [onAnswer], call not found");
-    }
-
-    notifyCallChange();
 
     logger::instance().log(4, "onAnswerCall " + token);
 
-    return OpalManager::OnAnswerCall(connection, caller);
+    return OpalConnection::AnswerCallPending;
 }
 
 void phoneManager::OnClearedCall(OpalCall &call){
@@ -185,14 +177,15 @@ void phoneManager::OnClearedCall(OpalCall &call){
 
     HistoryStruct s;
     s.type = 0;
-    if(call.IsNetworkOriginated()){
-        s.number = (const char*)call.GetPartyA();
+    s.number = (const char*)call.GetPartyA();
+    if(s.number.find("pc:")!=s.number.npos){
         s.type = 1;
-    }
-    else{
         s.number = (const char*)call.GetPartyB();
-        s.type = 2;
     }
+
+    string callEndReason = call.GetCallEndReasonText();
+    if(callEndReason.find("cleared")==callEndReason.npos)
+        s.type = 3;
 
     //cout << call.GetCallEndReason() << " " << call.GetCallEndReasonText() << endl;
 
@@ -243,6 +236,7 @@ PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned optio
     if(calls.find(token)!=calls.end()){
         logger::instance().log(4,"Warning [onIncommingConnection], token repeat");
     } else {
+
         CallStruct* s = new CallStruct();
         s->token = token;
         s->active = false;
@@ -251,6 +245,11 @@ PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned optio
         string pb = conn.GetCall().GetPartyA(), pa = conn.GetCall().GetPartyB();
         s->partyA = pa;
         s->partyB = pb;
+
+        if(pb.find("pc:")!=pb.npos){
+            s->partyB = pa.substr(0, pa.find(";"));
+        }
+
 
         calls.insert(pair<string, CallStruct*>(token, s));
     }

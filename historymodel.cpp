@@ -27,15 +27,29 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
     return QVariant();
 }
 
+// 0 -inc
+// 1 - out
+// 2 - err
 QVariant HistoryModel::data(const QModelIndex &index, int role) const{
     if(role==Qt::DisplayRole){
         switch(index.column()){
             case 0:
                 return history[index.row()].number.c_str();
-            case 1:
-                return QString::number(history[index.row()].type);
+
         }
     }
+
+    if(role == Qt::DecorationRole){
+        if(index.column()==1){
+            if(history[index.row()].type==0)
+                return QIcon(":/icons/icons/In.png");
+            if(history[index.row()].type==1)
+                return QIcon(":/icons/icons/Out.png");
+            if(history[index.row()].type>1)
+                return QIcon(":/icons/icons/Failure.png");
+        }
+    }
+
     return QVariant();
 }
 

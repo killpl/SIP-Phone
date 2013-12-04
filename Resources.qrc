@@ -2,6 +2,14 @@
     <qresource prefix="/icons">
         <file>icons/Black_Plus.png</file>
         <file>icons/Black_Remove.png</file>
+        <file>icons/Call.png</file>
+        <file>icons/Clear.png</file>
+        <file>icons/Failure.png</file>
+        <file>icons/Hangup.png</file>
+        <file>icons/Hold.png</file>
+        <file>icons/In.png</file>
+        <file>icons/Out.png</file>
+        <file>icons/Retrieve.png</file>
     </qresource>
     <qresource prefix="/style">
         <file>style.qss</file>
