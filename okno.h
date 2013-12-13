@@ -55,14 +55,16 @@ public:
     explicit Okno(QWidget *parent = 0);
     ~Okno();
     
-    void onCallsUpdate();
-    void onRegistrationsUpdate();
-    void onHistoryUpdate();
     void showMessage(QString text);
 
 signals:
     void RegistrationSuccess(QString aor, QString registrar);
     void RegistrationFailed(QString aor, QString registrar);
+
+public slots:
+    void onCallsUpdate();
+    void onRegistrationsUpdate();
+    void onHistoryUpdate();
 
 private slots:
     void RegistrationAdd(RegistrationStruct r);
@@ -80,6 +82,8 @@ private slots:
     void on_pushButton_8_clicked();
     void on_pushButton_9_clicked();
     void on_pushButton_0_clicked();
+    void on_pushButton_star_clicked();
+    void on_pushButton_dash_clicked();
 
     void on_pushButton_Backspace_clicked();
     void on_pushButton_Clear_clicked();

@@ -12,17 +12,23 @@ void ContactDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     } else{
         painter->setBrush(QBrush(QColor(100,100,100,100)));
     }
+    painter->setPen(QColor(200,200,200,150));
     painter->drawRoundedRect(QRect(r.x()+1, r.y()+1, r.width()-2, r.height()-2),3,3);
+
     painter->setBrush(QBrush(QColor(255,0,0,255)));
+
 
     QStringList data = index.data().toStringList();
 
+    painter->setPen(QColor(50,50,50,200));
     painter->setFont(QFont("serif",10));
     painter->drawText(QRect(r.x()+5,r.y()+3,r.width()-10, r.height()-10),data[0]);
 
+    painter->setPen(QColor(100,100,100,200));
     painter->setFont(QFont("serif",10));
     painter->drawText(QRect(r.x()+5,r.y()+18,r.width()-10, r.height()-10),data[1]);
 
+    painter->setPen(QColor(0,0,0,255));
     painter->setFont(QFont("serif",18,2));
     painter->drawText(QRect(r.x()+220,r.y()+5,r.width()-10, r.height()-10),data[2]);
 

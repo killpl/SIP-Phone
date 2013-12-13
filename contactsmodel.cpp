@@ -42,15 +42,8 @@ QVariant ContactsModel::data(const QModelIndex &index, int role) const
 
         switch(index.column()){
             case 0:
-                return QVariant(list);//QString(s.name.c_str());
-            /*case 1:
-                return QString(s.email.c_str());
-            case 2:
-                return QString(s.number.c_str());
-            default:
-                return QString("Error");*/
+                return QVariant(list);
         }
-        //return QString("Kontakt %1 (%2)").arg(index.row()+1).arg(index.column()+1);
     }
     return QVariant();
 

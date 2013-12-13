@@ -7,7 +7,6 @@ Okno::Okno(QWidget *parent) :
     ui(new Ui::Okno)
 {
     ui->setupUi(this);
-    this->statusBar()->setSizeGripEnabled(false);
 
     configuration::instance().loadConfiguration("config.xml");
 
@@ -20,15 +19,15 @@ Okno::Okno(QWidget *parent) :
 
     manager = new phoneManager();
 
-    Observer* ob = new CallsObserver();
+    Observer* ob = new CallsObserver(this);
     ob->setListener(this);
     manager->registerCallsObserver(ob);
 
-    ob = new RegistrationObserver();
+    ob = new RegistrationObserver(this);
     ob->setListener(this);
     manager->registerRegsObserver(ob);
 
-    ob = new HistoryObserver();
+    ob = new HistoryObserver(this);
     ob->setListener(this);
     manager->registerHistObserver(ob);
 
@@ -249,6 +248,16 @@ void Okno::on_pushButton_9_clicked()
 void Okno::on_pushButton_0_clicked()
 {
     ui->lineEditNumber->setText(ui->lineEditNumber->text()+"0");
+}
+
+void Okno::on_pushButton_star_clicked()
+{
+    ui->lineEditNumber->setText(ui->lineEditNumber->text()+"*");
+}
+
+void Okno::on_pushButton_dash_clicked()
+{
+    ui->lineEditNumber->setText(ui->lineEditNumber->text()+"#");
 }
 
 void Okno::on_pushButton_Backspace_clicked()
