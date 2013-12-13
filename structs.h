@@ -20,11 +20,6 @@ struct RegistrationStruct{
     bool active;
 };
 
-enum CallStates{
-
-
-};
-
 // SIP Call
 struct CallStruct{
     string token;   // token
@@ -48,6 +43,7 @@ struct ContactStruct{
 
 struct HistoryStruct{
     string number;
+    string reason;
     int type;
     // 0 - incomming
     // 1 - outgoing

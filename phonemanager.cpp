@@ -34,7 +34,7 @@ phoneManager::phoneManager():OpalManager()
 
 phoneManager::~phoneManager(){
     sipEP->UnregisterAll();
-    this->ShutDownEndpoints();
+    //this->ShutDownEndpoints();
 }
 
 // Zadzwon z pierwszego dostepnego numeru na podany numer
@@ -186,11 +186,9 @@ void phoneManager::OnClearedCall(OpalCall &call){
     string callEndReason = call.GetCallEndReasonText();
     if(callEndReason.find("cleared")==callEndReason.npos)
         s.type = 3;
-
-    //cout << call.GetCallEndReason() << " " << call.GetCallEndReasonText() << endl;
+    s.reason = callEndReason;
 
     history.push_back(s);
-
 
     notifyCallChange();
     notifyHistChange();

@@ -3,16 +3,7 @@
 ContactsModel::ContactsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    /*ContactStruct s;
-    s.email = "aaaa";
-    s.name="bbb";
-    s.number = "54353535";
 
-    contacts.insert(s.number,s);
-    s.email="cccccc";
-    s.name="zzzzzz";
-    s.number="5234234234";
-    contacts.insert(s.number, s);*/
 }
 
 int ContactsModel::rowCount(const QModelIndex &/*parent*/) const
@@ -33,10 +24,6 @@ QVariant ContactsModel::headerData(int section, Qt::Orientation orientation, int
                  {
                  case 0:
                      return QString("Kontakt");
-                 /*case 1:
-                     return QString("Adres email");
-                 case 2:
-                     return QString("Numer telefonu");*/
                  }
              }
          }

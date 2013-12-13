@@ -19,6 +19,7 @@ void AddContact::on_buttonBox_accepted()
     ContactStruct contact;
     contact.name = ui->lineEdit->text().toStdString();
     contact.number = ui->lineEdit_2->text().toStdString();
+    contact.email = ui->lineEdit_3->text().toStdString();
     model->addContact(contact);
 }
 

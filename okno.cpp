@@ -47,9 +47,12 @@ Okno::Okno(QWidget *parent) :
     hModel = new HistoryModel(this);
 
     ui->tableViewHistory->setModel(hModel);
-    ui->tableViewHistory->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
+    ui->tableViewHistory->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     ui->tableViewHistory->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
-    ui->tableViewHistory->setColumnWidth(1, 50);
+    ui->tableViewHistory->horizontalHeader()->setResizeMode(2,QHeaderView::Fixed);
+    ui->tableViewHistory->setColumnWidth(0, 170);
+    ui->tableViewHistory->setColumnWidth(1, 215);
+    ui->tableViewHistory->setColumnWidth(2, 30);
 
     settings = new Settings(manager,NULL);
     settings->loadSettings();

@@ -10,7 +10,7 @@ int HistoryModel::rowCount(const QModelIndex &/*parent*/) const{
 }
 
 int HistoryModel::columnCount(const QModelIndex &/*parent*/) const{
-    return 2;
+    return 3;
 }
 
 QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int role) const{
@@ -20,7 +20,9 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
                 case 0:
                     return "Numer";
                 case 1:
-                    return "Status";
+                    return QString::fromUtf8("Powód zakończenia");
+                case 2:
+                    return "";
             }
         }
     }
@@ -35,12 +37,13 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const{
         switch(index.column()){
             case 0:
                 return history[index.row()].number.c_str();
-
+            case 1:
+                return history[index.row()].reason.c_str();
         }
     }
 
     if(role == Qt::DecorationRole){
-        if(index.column()==1){
+        if(index.column()==2){
             if(history[index.row()].type==0)
                 return QIcon(":/icons/icons/In.png");
             if(history[index.row()].type==1)

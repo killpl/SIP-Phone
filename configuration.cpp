@@ -85,8 +85,6 @@ bool configuration::loadConfiguration(string filename){
                     }
                 }
             }
-
-            qDebug() << qPrintable(e.tagName());
         }
         n = n.nextSibling();
     }
