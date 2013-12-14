@@ -18,17 +18,14 @@ HistoryObserver::HistoryObserver(Okno* ok){
 
 
 void RegistrationObserver::notify(){
-    //o->onRegistrationsUpdate();
     emit notifySignal();
 }
 
 void CallsObserver::notify(){
-    //o->onCallsUpdate();
     emit notifySignal();
 }
 
 void HistoryObserver::notify(){
-    //o->onHistoryUpdate();
     emit notifySignal();
 }
 
