@@ -41,10 +41,6 @@ public:
     void removeContact(QModelIndex index);
 
     QVector<ContactStruct> getContacts();
-
-signals:
-    
-public slots:
     
 };
 

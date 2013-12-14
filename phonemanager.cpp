@@ -159,7 +159,7 @@ void phoneManager::OnAlerting(OpalConnection &connection){
 OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &connection, const PString &/*caller*/){
     string token = connection.GetCall().GetToken();
 
-    logger::instance().log(4, "onAnswerCall " + token);
+    logger::instance().log("onAnswerCall " + token);
 
     return OpalConnection::AnswerCallPending;
 }
@@ -167,12 +167,12 @@ OpalConnection::AnswerCallResponse phoneManager::OnAnswerCall(OpalConnection &co
 void phoneManager::OnClearedCall(OpalCall &call){
     string token = call.GetToken();
 
-    logger::instance().log(4, "onClearedCall " + token);
+    logger::instance().log("onClearedCall " + token);
 
     if(calls.find(token)!=calls.end()){
         calls.erase(calls.find(token));
     } else {
-        logger::instance().log(4, "Warning [clearedCal], call not found");
+        logger::instance().log("Warning [clearedCal], call not found");
     }
 
     HistoryStruct s;
@@ -199,12 +199,12 @@ void phoneManager::OnClearedCall(OpalCall &call){
 void phoneManager::OnHold(OpalConnection &connection, bool fromRemote, bool onHold){
      string token = connection.GetCall().GetToken();
 
-     logger::instance().log(4, "onHold " + token);
+     logger::instance().log("onHold " + token);
 
      if(calls.find(token)!=calls.end()){
          calls.at(token)->hold = onHold;
      } else {
-          logger::instance().log(4,"Warning [onHold], call not found");
+          logger::instance().log("Warning [onHold], call not found");
      }
 
      notifyCallChange();
@@ -214,12 +214,12 @@ void phoneManager::OnHold(OpalConnection &connection, bool fromRemote, bool onHo
 void phoneManager::OnEstablishedCall(OpalCall &call){
     string token = call.GetToken();
 
-    logger::instance().log(4, "onEstablishedCall "+ token);
+    logger::instance().log("onEstablishedCall "+ token);
 
     if(calls.find(token)!=calls.end()){
         calls.at(token)->active = true;
     } else {
-        logger::instance().log(4,"Warning [onEstablished], call not found");
+        logger::instance().log("Warning [onEstablished], call not found");
     }
 
     notifyCallChange();
@@ -229,10 +229,10 @@ void phoneManager::OnEstablishedCall(OpalCall &call){
 PBoolean phoneManager::OnIncomingConnection(OpalConnection &conn, unsigned options, OpalConnection::StringOptions *stringOptions){
     string token = conn.GetCall().GetToken();
 
-    logger::instance().log(4, "onIncommingConnection " + token);
+    logger::instance().log("onIncommingConnection " + token);
 
     if(calls.find(token)!=calls.end()){
-        logger::instance().log(4,"Warning [onIncommingConnection], token repeat");
+        logger::instance().log("Warning [onIncommingConnection], token repeat");
     } else {
 
         CallStruct* s = new CallStruct();

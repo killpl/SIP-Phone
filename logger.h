@@ -10,7 +10,7 @@ class logger
     logger();
     logger(const logger&);
     logger& operator=(const logger&);
-    ~logger() { }
+    ~logger();
 
 
 public:
@@ -19,7 +19,7 @@ public:
         return instance;
     }
 
-    void log(int level, std::string message);
+    void log(std::string message);
 };
 
 #endif // LOGGER_H

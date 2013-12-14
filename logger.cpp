@@ -1,10 +1,16 @@
 #include "logger.h"
+#include <syslog.h>
+
 
 logger::logger()
 {
+    openlog("Softphone", LOG_PID, LOG_USER);
 }
 
+logger::~logger(){
+    closelog();
+}
 
-void logger::log(int level, std::string message){
-    std::cout << "[" << level << "]\t" << message << std::endl;
+void logger::log(std::string message){
+    syslog(LOG_INFO, message.c_str());
 }

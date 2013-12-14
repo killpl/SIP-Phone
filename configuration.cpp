@@ -157,8 +157,6 @@ bool configuration::saveConfiguration(string filename){
         addressbook.appendChild(elem);
     }
 
-    //qDebug() << doc.toString();
-
     QFile file(filename.c_str());
     file.open(QIODevice::WriteOnly);
 
@@ -167,7 +165,7 @@ bool configuration::saveConfiguration(string filename){
         out << doc.toString();
         file.close();
     } else {
-        logger::instance().log(1, "Configuration file not found");
+        logger::instance().log("Configuration file not found");
         return false;
     }
 
