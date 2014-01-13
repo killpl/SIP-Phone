@@ -610,7 +610,6 @@
     <property name="title">
      <string>Plik</string>
     </property>
-    <addaction name="actionWyloguj"/>
     <addaction name="actionZamknij"/>
    </widget>
    <widget class="QMenu" name="menuUstawienia">

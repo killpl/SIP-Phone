@@ -93,6 +93,9 @@ private slots:
     void on_pushButtonAdd_clicked();
     void on_pushButtonRemove_clicked();
 
+    void onAbout();
+    void onClose();
+
 private:
     Ui::Okno *ui;
 };

@@ -67,6 +67,9 @@ Okno::Okno(QWidget *parent) :
     connect(ui->actionZamknij, SIGNAL(changed()), this, SLOT(close()));
 
     settings->registerAll();
+
+    connect(ui->actionO_programie, SIGNAL(triggered()), this, SLOT(onAbout()));
+    connect(ui->actionZamknij, SIGNAL(triggered()), this, SLOT(onClose()));
 }
 
 Okno::~Okno()
@@ -369,4 +372,16 @@ void Okno::on_pushButtonRemove_clicked()
     foreach(QModelIndex index, ui->listViewAddressbook->selectionModel()->selectedIndexes()){
         cModel->removeContact(index);
     }
+}
+
+void Okno::onAbout(){
+    QMessageBox* msg = new QMessageBox(this);
+    msg->setText(QString::fromUtf8("Softphone - Adam Kozłowski. Aplikacja została wykonana w ramach pracy inżynierskiej na Politechnice Białostockiej."));
+    msg->show();
+}
+
+
+void Okno::onClose(){
+    manager->unregisterAll();
+    exit(0);
 }
